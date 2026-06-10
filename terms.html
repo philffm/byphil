@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>byphil. — Simple Terms of Service</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { zincDark: '#09090b', zincCard: '#18181b' },
+                    fontFamily: { sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <script src="[https://unpkg.com/lucide@latest](https://unpkg.com/lucide@latest)"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="min-h-screen flex flex-col justify-between font-sans">
+    <header class="max-w-3xl mx-auto w-full px-6 py-12 flex items-center justify-between">
+        <a href="index.html" class="flex items-center gap-2 group">
+            <span class="font-bold text-sm tracking-tight text-white">byphil<span class="text-zinc-600 group-hover:text-white transition-colors">.</span>eu</span>
+        </a>
+        <nav class="flex items-center gap-6 text-xs text-zinc-400 font-semibold">
+            <a href="index.html#tools" class="hover:text-white transition-colors">My Tools</a>
+            <a href="index.html#pass" class="hover:text-white transition-colors">Support Pass</a>
+            <a href="impressum.html" class="hover:text-white transition-colors">Impressum</a>
+        </nav>
+    </header>
+
+    <main class="max-w-3xl mx-auto w-full px-6 flex-1 py-4 space-y-8">
+        <div class="space-y-2 border-b border-zinc-900 pb-4">
+            <span class="text-[10px] font-mono tracking-widest text-zinc-500 uppercase">Usage Agreement</span>
+            <h2 class="text-2xl font-black text-white">📜 Simple Terms of Service</h2>
+        </div>
+
+        <article class="text-zinc-300 text-xs leading-relaxed space-y-6">
+            <section class="space-y-2">
+                <h3 class="font-bold text-white text-sm">1. General Agreement</h3>
+                <p>These terms govern your use of the tools created by Phil Wornath (including AI Summary Helper and PetSetLife). By acquiring a Support Pass, you unlock premium tiers of our apps using safe, passwordless One-Time Password (OTP) email logins.</p>
+            </section>
+
+            <section class="space-y-2">
+                <h3 class="font-bold text-white text-sm">2. Account & License Ownership</h3>
+                <p>Subscriptions are linked directly to your authenticated personal email address. You are responsible for keeping your email session token secure.</p>
+            </section>
+
+            <section class="space-y-2">
+                <h3 class="font-bold text-white text-sm">3. Acceptable Use Guidelines</h3>
+                <p>My tools are intended for standard human reading, tracking, and personal organization. Automated scripting, continuous high-volume server stress-testing, bulk scraping via our gateways, or trying to resell proxy bandwidth will result in immediate suspension of your Support Pass without prior warning.</p>
+            </section>
+
+            <section class="space-y-2">
+                <h3 class="font-bold text-white text-sm">4. Billing Provider</h3>
+                <p>Subscription processing, localized European VAT tax calculations, and secure checkout frameworks are managed entirely by Paddle.com Market Ltd as our authorized Merchant of Record.</p>
+            </section>
+        </article>
+    </main>
+
+    <footer class="max-w-3xl mx-auto w-full px-6 py-12 mt-16 border-t border-zinc-900 text-[10px] text-zinc-500 space-y-4">
+        <div class="flex flex-wrap justify-between gap-4 items-center">
+            <span class="font-bold text-zinc-400">byphil.</span>
+            <div class="flex flex-wrap gap-4 font-semibold text-zinc-400">
+                <a href="privacy.html" class="hover:text-white transition-colors">Privacy & GDPR</a>
+                <a href="terms.html" class="hover:text-white transition-colors">Terms of Service</a>
+                <a href="refunds.html" class="hover:text-white transition-colors">Refunds & Returns</a>
+                <a href="impressum.html" class="hover:text-white transition-colors">Impressum</a>
+            </div>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>

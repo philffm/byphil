@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>byphil. — Refunds & Returns Policy</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { zincDark: '#09090b', zincCard: '#18181b' },
+                    fontFamily: { sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <script src="[https://unpkg.com/lucide@latest](https://unpkg.com/lucide@latest)"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="min-h-screen flex flex-col justify-between font-sans">
+    <header class="max-w-3xl mx-auto w-full px-6 py-12 flex items-center justify-between">
+        <a href="index.html" class="flex items-center gap-2 group">
+            <span class="font-bold text-sm tracking-tight text-white">byphil<span class="text-zinc-600 group-hover:text-white transition-colors">.</span>eu</span>
+        </a>
+        <nav class="flex items-center gap-6 text-xs text-zinc-400 font-semibold">
+            <a href="index.html#tools" class="hover:text-white transition-colors">My Tools</a>
+            <a href="index.html#pass" class="hover:text-white transition-colors">Support Pass</a>
+            <a href="impressum.html" class="hover:text-white transition-colors">Impressum</a>
+        </nav>
+    </header>
+
+    <main class="max-w-3xl mx-auto w-full px-6 flex-1 py-4 space-y-8">
+        <div class="space-y-2 border-b border-zinc-900 pb-4">
+            <span class="text-[10px] font-mono tracking-widest text-zinc-500 uppercase">Customer Guarantee</span>
+            <h2 class="text-2xl font-black text-white">↩️ Refunds & Cancellation Policy</h2>
+        </div>
+
+        <article class="text-zinc-300 text-xs leading-relaxed space-y-6">
+            <section class="space-y-2">
+                <h3 class="font-bold text-white text-sm">1. Statutory EU Right of Withdrawal</h3>
+                <p>Under standard EU digital consumer laws, the statutory 14-day right of withdrawal from digital contract execution expires instantly once service performance has started (for example, when you run your first premium AI summary or set up custom logs).</p>
+            </section>
+
+            <section class="space-y-2">
+                <h3 class="font-bold text-white text-sm">2. My Voluntary 14-Day Satisfaction Guarantee</h3>
+                <p>Because I build products to be genuinely helpful, I voluntarily provide a <strong>14-day 100% money-back satisfaction guarantee</strong> that overrides the statutory exclusion. If you are not fully happy with your Support Pass, you can request a complete refund within 14 days of purchase directly through your Paddle receipt or by emailing billing support.</p>
+            </section>
+
+            <section class="space-y-2">
+                <h3 class="font-bold text-white text-sm">3. Dynamic Subscription Cancellations</h3>
+                <p>You can cancel active subscriptions at any time. When cancelled, your Support Pass remains active and unthrottled until the end of your current paid billing period.</p>
+            </section>
+        </article>
+    </main>
+
+    <footer class="max-w-3xl mx-auto w-full px-6 py-12 mt-16 border-t border-zinc-900 text-[10px] text-zinc-500 space-y-4">
+        <div class="flex flex-wrap justify-between gap-4 items-center">
+            <span class="font-bold text-zinc-400">byphil.</span>
+            <div class="flex flex-wrap gap-4 font-semibold text-zinc-400">
+                <a href="privacy.html" class="hover:text-white transition-colors">Privacy & GDPR</a>
+                <a href="terms.html" class="hover:text-white transition-colors">Terms of Service</a>
+                <a href="refunds.html" class="hover:text-white transition-colors">Refunds & Returns</a>
+                <a href="impressum.html" class="hover:text-white transition-colors">Impressum</a>
+            </div>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>

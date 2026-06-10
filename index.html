@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>byphil. — Simple, Private Apps hosted in Germany</title>
+    <meta name="description" content="One simple pass to unlock all my tools, including AI Summary Helper Pro and PetSetLife. Private by design, hosted in Germany.">
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%2309090b%22/><path d=%22M30 40 L50 20 L70 40 L50 60 Z%22 fill=%22%23ffffff%22/><path d=%22M30 65 L50 45 L70 65 L50 85 Z%22 fill=%22%23a1a1aa%22/></svg>">
+    
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        zincDark: '#09090b',
+                        zincCard: '#18181b',
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <link rel="stylesheet" href="css/style.css">
+    
+    <meta name="google-site-verification" content="_QcmSOybAqnxQ1YH95ay00G4LZgwxLg-1Pb50QBpI2c" />
+    <meta name="robots" content="follow, index">
+
+    <meta property="og:title" content="byphil. — Simple, Private Apps">
+    <meta property="og:description" content="One simple pass to unlock all my tools. Private by design, hosted in Germany.">
+    <meta property="og:type" content="website">
+</head>
+<body class="min-h-screen flex flex-col justify-between font-sans bg-zincDark text-zinc-300">
+
+    <header class="max-w-3xl mx-auto w-full px-6 py-12 flex items-center justify-between">
+        <a href="index.html" class="flex items-center gap-2 group">
+            <span class="font-bold text-sm tracking-tight text-white">byphil<span class="text-zinc-600 group-hover:text-white transition-colors">.</span>eu</span>
+        </a>
+        <nav class="flex items-center gap-6 text-xs text-zinc-400 font-semibold">
+            <a href="#tools" class="hover:text-white transition-colors flex items-center gap-1"><i data-lucide="wrench" class="w-3 h-3"></i> My Tools</a>
+            <a href="#pass" class="hover:text-white transition-colors flex items-center gap-1"><i data-lucide="key-round" class="w-3 h-3"></i> Support Pass</a>
+            <a href="impressum.html" class="hover:text-white transition-colors">Impressum</a>
+        </nav>
+    </header>
+
+    <main class="max-w-3xl mx-auto w-full px-6 flex-1 space-y-20">
+
+        <section class="space-y-4 pt-4">
+            <h2 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight max-w-xl">
+                Simple tools. Private by design. <br>
+                <span class="font-normal text-zinc-500">Hosted in Germany.</span>
+            </h2>
+            <p class="text-zinc-400 text-xs leading-relaxed max-w-lg">
+                I build clean, fast web tools to make life easier. There are no corporate investors, no intrusive tracking cookies, and your data never leaves European servers.
+            </p>
+            <div class="flex items-center gap-2 text-[10px] font-mono text-zinc-600">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="flex items-center gap-1"><i data-lucide="server" class="w-3 h-3 text-zinc-600"></i> Sovereign German servers based in Frankfurt</span>
+            </div>
+        </section>
+
+        <section id="tools" class="space-y-6 pt-8 border-t border-zinc-900">
+            <div>
+                <span class="text-[10px] font-mono tracking-widest text-zinc-500 uppercase">What I build</span>
+                <h3 class="text-lg font-bold text-white mt-1">Available Tools</h3>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                
+                <div class="space-y-3">
+                    <div class="flex items-baseline justify-between">
+                        <h4 class="text-xs font-bold text-white flex items-center gap-1.5">
+                            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-zinc-400"></i> AI Summary Helper
+                        </h4>
+                        <span class="text-[10px] font-mono text-zinc-500">Chrome Extension</span>
+                    </div>
+                    <p class="text-zinc-400 text-xs leading-relaxed">
+                        Read articles, PDFs, and watch long YouTube videos in seconds. It runs entirely in your browser's side panel. Send clear summaries straight to your Kindle e-ink screen in a single click. Either run it instantly through my cloud proxy or use your own API keys.
+                    </p>
+                    <div class="flex gap-4 text-xs font-semibold pt-1">
+                        <a href="https://chrome.google.com/webstore/detail/ai-summary-helper-summari/hldbejcjaedipeegjcinmhejdndchkmb" target="_blank" class="text-white hover:underline flex items-center gap-1">
+                            Chrome Web Store <i data-lucide="arrow-up-right" class="w-3 h-3 text-zinc-500"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="flex items-baseline justify-between">
+                        <h4 class="text-xs font-bold text-white flex items-center gap-1.5">
+                            <i data-lucide="cat" class="w-3.5 h-3.5 text-zinc-400"></i> PetSetLife
+                        </h4>
+                        <span class="text-[10px] font-mono text-zinc-500">Web App</span>
+                    </div>
+                    <p class="text-zinc-400 text-xs leading-relaxed">
+                        A simple companion journal for your pets. Track daily food intake, log vet schedules, and keep health records organized in one private panel. Generates a custom QR code profile you can link directly to physical collar tags.
+                    </p>
+                    <div class="flex gap-4 text-xs font-semibold pt-1">
+                        <a href="https://petsetlife.byphil.eu/" target="_blank" class="text-white hover:underline flex items-center gap-1">
+                            Open PetSetLife <i data-lucide="arrow-up-right" class="w-3 h-3 text-zinc-500"></i>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="pass" class="bg-zinc-900/30 border border-zinc-800/60 rounded-2xl p-6 sm:p-8 space-y-6">
+            <div class="space-y-1">
+                <span class="text-[10px] font-mono tracking-widest text-zinc-500 uppercase">Support Independent Software</span>
+                <h3 class="text-lg font-bold text-white">The byphil. Support Pass</h3>
+            </div>
+            
+            <p class="text-zinc-400 text-xs leading-relaxed">
+                Running server infrastructure, routing AI models, and maintaining extensions takes time and resources. 
+                Instead of charging confusing fees for each app, the <strong>Support Pass</strong> is one simple key that unlocks premium features across all my current and future tools.
+            </p>
+
+            <div class="grid sm:grid-cols-3 gap-6 pt-2 text-xs">
+                <div>
+                    <h5 class="font-bold text-white flex items-center gap-1.5"><i data-lucide="unlock" class="w-3.5 h-3.5 text-zinc-400"></i> Unlock Everything</h5>
+                    <p class="text-zinc-500 mt-1">Get unlimited summaries, full Kindle transfers, and unlimited pet journal slots.</p>
+                </div>
+                <div>
+                    <h5 class="font-bold text-white flex items-center gap-1.5"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-zinc-400"></i> One Account</h5>
+                    <p class="text-zinc-500 mt-1">Sign in with your email once. Premium status applies instantly to all extensions and apps.</p>
+                </div>
+                <div>
+                    <h5 class="font-bold text-white flex items-center gap-1.5"><i data-lucide="cpu" class="w-3.5 h-3.5 text-zinc-400"></i> Keep Your Keys</h5>
+                    <p class="text-zinc-500 mt-1">If you prefer developer mode, you can still bring your own API keys for free.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="pricing" class="space-y-6 pt-8 border-t border-zinc-900">
+            <div class="flex justify-between items-baseline">
+                <div>
+                    <span class="text-[10px] font-mono tracking-widest text-zinc-500 uppercase">Choose how to support</span>
+                    <h3 class="text-lg font-bold text-white mt-1">Support Options</h3>
+                </div>
+                <button onclick="toggleBilling()" id="billingToggle" class="text-[10px] font-mono text-zinc-500 hover:text-white transition-colors font-mono font-semibold flex items-center gap-1">
+                    <i data-lucide="refresh-cw" class="w-3 h-3"></i> Plan: Monthly (Tap to see Yearly saving)
+                </button>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                
+                <div class="border border-zinc-900 rounded-xl p-5 flex flex-col justify-between space-y-4 bg-zinc-900/10">
+                    <div class="space-y-1">
+                        <h4 class="text-xs font-bold text-white">Free Trial</h4>
+                        <div class="text-base font-black text-zinc-500">€0</div>
+                        <p class="text-[10px] text-zinc-500">Test my tools first</p>
+                    </div>
+                    <ul class="space-y-1.5 text-[10px] text-zinc-400">
+                        <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-zinc-600"></i> 3 summaries a month</li>
+                        <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-zinc-600"></i> 1 Pet journal profile</li>
+                        <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-zinc-600"></i> Use your own API keys</li>
+                    </ul>
+                    <a href="https://philwornath.com/links" target="_blank" class="border border-zinc-800 hover:bg-zinc-800 text-white font-semibold py-2 rounded-lg text-center text-[10px] transition-all block">
+                        Get Started
+                    </a>
+                </div>
+
+                <div class="border border-zinc-800 rounded-xl p-5 flex flex-col justify-between space-y-4 relative bg-zinc-900/20">
+                    <div class="space-y-1">
+                        <h4 class="text-xs font-bold text-white font-semibold">Support Pass</h4>
+                        <div id="everydayPrice" class="text-base font-black text-white">€4.99 <span class="text-[10px] text-zinc-500 font-normal">/ month</span></div>
+                        <p id="everydayPeriod" class="text-[10px] text-zinc-500 font-mono">Billed monthly</p>
+                    </div>
+                    <ul class="space-y-1.5 text-[10px] text-zinc-400">
+                        <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-white"></i> <strong>Unlimited</strong> Web summaries</li>
+                        <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-white"></i> Unlimited pet journals</li>
+                        <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-white"></i> Kindle Delivery option</li>
+                    </ul>
+                    <a href="https://philwornath.com/links" class="bg-white hover:bg-zinc-200 text-black font-extrabold py-2 rounded-lg text-center text-[10px] transition-all block">
+                        Unlock Pass
+                    </a>
+                </div>
+
+                <div class="border border-amber-500/30 rounded-xl p-5 flex flex-col justify-between space-y-4 relative bg-zinc-900/30 overflow-hidden">
+                    <span class="absolute top-0 right-0 bg-amber-500/10 text-amber-400 text-[8px] font-bold px-2 py-0.5 rounded-bl-lg border-l border-b border-amber-500/20 uppercase tracking-wider">
+                        Best Value
+                    </span>
+                    
+                    <div class="space-y-1">
+                        <h4 class="text-xs font-bold text-amber-400">Donator Pass</h4>
+                        <div class="text-base font-black text-white">€50<span class="text-[10px] text-zinc-500 font-normal"> / one-time</span></div>
+                        <p class="text-[10px] text-zinc-500 font-mono">1 Year Full Access</p>
+                    </div>
+                    
+                    <ul class="space-y-1.5 text-[10px] text-zinc-400">
+                        <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-amber-400"></i> Everything in <strong>Support Pass</strong></li>
+                        <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-amber-400"></i> 12 months of premium features</li>
+                        <li class="flex items-center gap-1.5"><i data-lucide="heart" class="w-3.5 h-3.5 text-amber-400"></i> Direct support for future tools</li>
+                    </ul>
+                    
+                    <a href="https://philwornath.com/links" class="bg-amber-500 hover:bg-amber-400 text-black font-extrabold py-2 rounded-lg text-center text-[10px] transition-all block shadow-lg shadow-amber-500/10">
+                        Donate & Unlock
+                    </a>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="max-w-3xl mx-auto w-full px-6 py-12 mt-16 border-t border-zinc-900 text-[10px] text-zinc-500 space-y-4">
+        <div class="flex flex-wrap justify-between gap-4 items-center">
+            <div class="flex items-center gap-2">
+                <span class="font-bold text-zinc-400">byphil.</span>
+                <span>Independent software built in Germany & Spain.</span>
+            </div>
+            <div class="flex flex-wrap gap-4 font-semibold text-zinc-400">
+                <a href="privacy.html" class="hover:text-white transition-colors">Privacy & GDPR</a>
+                <a href="terms.html" class="hover:text-white transition-colors">Terms of Service</a>
+                <a href="refunds.html" class="hover:text-white transition-colors">Refunds & Returns</a>
+                <a href="impressum.html" class="hover:text-white transition-colors">Impressum</a>
+            </div>
+        </div>
+        <div class="flex flex-wrap justify-between gap-4 text-zinc-600">
+            <p>&copy; 2026 Phil Wornath. All rights reserved. Payments handled securely by Paddle as Merchant of Record.</p>
+            <div class="flex gap-4">
+                <a href="https://ec.europa.eu/consumers/odr" target="_blank" class="hover:text-zinc-500">EU Consumer Dispute Resolution</a>
+                <a href="https://github.com/philffm/ai-summary-helper/" target="_blank" class="hover:text-zinc-500 flex items-center gap-1"><i data-lucide="github" class="w-3 h-3"></i> Source on GitHub</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            lucide.createIcons();
+        });
+
+        let currentInterval = 'monthly';
+        function toggleBilling() {
+            const toggleBtn = document.getElementById('billingToggle');
+            const priceLabel = document.getElementById('everydayPrice');
+            const periodLabel = document.getElementById('everydayPeriod');
+            
+            if (currentInterval === 'monthly') {
+                currentInterval = 'yearly';
+                toggleBtn.innerHTML = "<i data-lucide='refresh-cw' class='w-3 h-3 animate-spin-once'></i> Plan: Yearly (Tap to see Monthly price)";
+                priceLabel.innerHTML = "€29.99 <span class='text-[10px] text-zinc-500 font-normal'>/ year</span>";
+                periodLabel.textContent = "Billed annually (Equivalent to €2.49/mo)";
+            } else {
+                currentInterval = 'monthly';
+                toggleBtn.innerHTML = "<i data-lucide='refresh-cw' class='w-3 h-3'></i> Plan: Monthly (Tap to see Yearly saving)";
+                priceLabel.innerHTML = "€4.99 <span class='text-[10px] text-zinc-500 font-normal'>/ month</span>";
+                periodLabel.textContent = "Billed monthly";
+            }
+            // Re-render Lucide icons dynamically injected inside inside buttons
+            lucide.createIcons();
+        }
+    </script>
+</body>
+</html>
