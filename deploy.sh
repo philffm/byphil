@@ -10,13 +10,13 @@ docker build -t "$IMAGE" .
 echo "==> Stopping & removing old container (if any) …"
 docker rm -f "$CONTAINER" 2>/dev/null || true
 
-echo "==> Starting container on a random host port …"
+echo "==> Starting container on a fixed host port …"
 docker run -d \
     --name "$CONTAINER" \
     --restart unless-stopped \
-    -p 0:80 \
+    -p 32769:80 \
     "$IMAGE"
-
+    
 # Retrieve the randomly assigned host port
 HOST_PORT=$(docker port "$CONTAINER" 80 | head -1 | sed 's/.*://')
 
