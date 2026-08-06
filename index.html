@@ -519,22 +519,15 @@
 
             links.forEach((link) => {
                 const targetHref = link.getAttribute('data-href');
-                if (isLoggedIn) {
-                    link.setAttribute('href', targetHref);
-                    link.setAttribute('target', '_blank');
-                    link.classList.remove('text-zinc-400');
-                    link.classList.add('text-zinc-900', 'hover:text-indigo-600');
-                } else {
-                    link.setAttribute('href', '#account');
-                    link.removeAttribute('target');
-                    link.classList.add('text-zinc-400');
-                    link.classList.remove('text-zinc-900', 'hover:text-indigo-600');
-                }
+                link.setAttribute('href', targetHref);
+                link.setAttribute('target', '_blank');
+                link.classList.remove('text-zinc-400');
+                link.classList.add('text-zinc-900', 'hover:text-indigo-600');
             });
 
             gateLabel.textContent = isLoggedIn
-                ? 'Signed in: all direct links unlocked.'
-                : 'Sign in to unlock direct access links.';
+                ? 'Signed in: account features enabled.'
+                : 'Direct links are open for everyone.';
         }
 
         function renderAccount(record) {
