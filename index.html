@@ -39,15 +39,28 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between font-sans bg-white text-zinc-700 antialiased">
 
-    <header class="max-w-4xl mx-auto w-full px-6 py-12 flex items-center justify-between">
+    <header class="max-w-4xl mx-auto w-full px-6 py-8 md:py-12 relative">
+        <div class="flex items-center justify-between">
         <a href="index.html" class="flex items-center gap-2 group">
             <span class="font-bold text-base tracking-tight text-zinc-900">byphil<span class="text-zinc-400 group-hover:text-zinc-900 transition-colors">.</span>eu</span>
         </a>
-        <nav class="flex items-center gap-6 text-sm text-zinc-500 font-semibold">
+        <nav class="hidden md:flex items-center gap-6 text-sm text-zinc-500 font-semibold">
             <a href="#account" class="hover:text-zinc-900 transition-colors flex items-center gap-1.5"><i data-lucide="user-round" class="w-4 h-4"></i> Account</a>
             <a href="#tools" class="hover:text-zinc-900 transition-colors flex items-center gap-1.5"><i data-lucide="wrench" class="w-4 h-4"></i> My Tools</a>
             <a href="#pass" class="hover:text-zinc-900 transition-colors flex items-center gap-1.5"><i data-lucide="key-round" class="w-4 h-4"></i> Support Pass</a>
             <a href="impressum.html" class="hover:text-zinc-900 transition-colors">Impressum</a>
+        </nav>
+        <button id="mobileMenuButton" type="button" class="md:hidden inline-flex items-center justify-center rounded-xl border border-zinc-300 bg-white p-2 text-zinc-700" aria-label="Toggle navigation" aria-expanded="false" aria-controls="mobileMenuPanel">
+            <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+        </div>
+        <nav id="mobileMenuPanel" class="hidden md:hidden mt-4 rounded-2xl border border-zinc-200 bg-white p-4 text-sm text-zinc-700 font-semibold">
+            <div class="flex flex-col gap-3">
+                <a href="#account" class="mobile-nav-link hover:text-zinc-900 transition-colors flex items-center gap-2"><i data-lucide="user-round" class="w-4 h-4"></i> Account</a>
+                <a href="#tools" class="mobile-nav-link hover:text-zinc-900 transition-colors flex items-center gap-2"><i data-lucide="wrench" class="w-4 h-4"></i> My Tools</a>
+                <a href="#pass" class="mobile-nav-link hover:text-zinc-900 transition-colors flex items-center gap-2"><i data-lucide="key-round" class="w-4 h-4"></i> Support Pass</a>
+                <a href="impressum.html" class="mobile-nav-link hover:text-zinc-900 transition-colors">Impressum</a>
+            </div>
         </nav>
     </header>
 
@@ -67,7 +80,7 @@
             </div>
             <div class="pt-2">
                 <a href="#account" class="inline-flex items-center gap-2 bg-zinc-900 hover:bg-zinc-800 text-white text-sm font-bold px-5 py-3 rounded-xl transition-all shadow-sm">
-                    <i data-lucide="mail-check" class="w-4 h-4"></i> Sign in or sign up with OTP
+                    <i data-lucide="mail-check" class="w-4 h-4"></i> Join or sign in
                 </a>
             </div>
         </section>
@@ -82,20 +95,24 @@
             <div id="authNotice" class="hidden rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"></div>
             <div id="authError" class="hidden rounded-xl border border-rose-300 bg-rose-50 px-4 py-3 text-sm text-rose-800"></div>
 
-            <div id="authPanel" class="grid md:grid-cols-2 gap-6">
-                <div class="space-y-4 bg-white border border-zinc-200 rounded-2xl p-5">
-                    <h4 class="text-base font-bold text-zinc-900 flex items-center gap-2"><i data-lucide="at-sign" class="w-4 h-4 text-zinc-500"></i> Step 1: Request OTP</h4>
+            <div id="authPanel" class="bg-white border border-zinc-200 rounded-2xl p-5 space-y-4">
+                <div class="flex items-center justify-between gap-3">
+                    <h4 id="authStepTitle" class="text-base font-bold text-zinc-900 flex items-center gap-2"><i data-lucide="at-sign" class="w-4 h-4 text-zinc-500"></i> Step 1: Request OTP</h4>
+                    <span id="authStepBadge" class="text-xs font-bold text-zinc-500 bg-zinc-100 rounded-full px-2.5 py-1">1 / 2</span>
+                </div>
+                <div class="space-y-2">
                     <label class="block text-sm font-semibold text-zinc-700" for="authEmail">Email</label>
                     <input id="authEmail" type="email" placeholder="you@example.com" class="w-full rounded-xl border border-zinc-300 px-3 py-2 text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-900 focus:outline-none" />
-                    <button id="requestOtpBtn" type="button" class="w-full rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-bold text-white hover:bg-zinc-800 transition-colors">Send OTP Code</button>
                 </div>
-
-                <div class="space-y-4 bg-white border border-zinc-200 rounded-2xl p-5">
-                    <h4 class="text-base font-bold text-zinc-900 flex items-center gap-2"><i data-lucide="shield-check" class="w-4 h-4 text-zinc-500"></i> Step 2: Verify Code</h4>
+                <div id="otpGroup" class="hidden space-y-2">
                     <label class="block text-sm font-semibold text-zinc-700" for="otpCode">6-digit OTP code</label>
                     <input id="otpCode" type="text" inputmode="numeric" maxlength="6" placeholder="123456" class="w-full rounded-xl border border-zinc-300 px-3 py-2 text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-900 focus:outline-none" />
-                    <button id="verifyOtpBtn" type="button" class="w-full rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-bold text-white hover:bg-zinc-800 transition-colors">Verify and Sign in</button>
                     <p class="text-xs text-zinc-500">No password needed. Sign in and sign up share the same OTP flow.</p>
+                </div>
+                <div class="flex flex-wrap gap-2 pt-1">
+                    <button id="requestOtpBtn" type="button" class="rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-bold text-white hover:bg-zinc-800 transition-colors">Send OTP Code</button>
+                    <button id="verifyOtpBtn" type="button" class="hidden rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-bold text-white hover:bg-zinc-800 transition-colors">Verify and Sign in</button>
+                    <button id="changeEmailBtn" type="button" class="hidden rounded-xl border border-zinc-300 px-4 py-2.5 text-sm font-bold text-zinc-800 hover:bg-zinc-100 transition-colors">Use different email</button>
                 </div>
             </div>
 
@@ -121,10 +138,22 @@
                         <p id="accountLicense" class="font-semibold text-zinc-900">No</p>
                     </div>
                 </div>
+                <div id="licenseActions" class="hidden rounded-xl border border-zinc-200 bg-zinc-50 p-4 space-y-3">
+                    <p class="text-sm font-semibold text-zinc-900">Link your Support Pass license</p>
+                    <p class="text-xs text-zinc-500">No license linked yet. Paste a license key or Stripe subscription ID (sub_...) to unlock premium access.</p>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <input id="licenseKeyInput" type="text" placeholder="Paste license key or sub_..." class="w-full rounded-xl border border-zinc-300 px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-900 focus:outline-none" />
+                        <button id="linkLicenseBtn" type="button" class="rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-bold text-white hover:bg-zinc-800 transition-colors">Link License</button>
+                    </div>
+                    <a href="https://buy.stripe.com/8x24gy3Lj9RkeAl9T5bEA02" target="_blank" class="inline-flex items-center gap-2 text-sm font-bold text-indigo-600 hover:text-indigo-700 transition-colors underline underline-offset-4">
+                        Buy Support Pass first <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                </div>
                 <div class="flex flex-wrap gap-3">
                     <button id="downloadDataBtn" type="button" class="rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-bold text-white hover:bg-zinc-800 transition-colors flex items-center gap-2"><i data-lucide="download" class="w-4 h-4"></i> Download all account data</button>
                     <button id="refreshAccountBtn" type="button" class="rounded-xl border border-zinc-300 px-4 py-2.5 text-sm font-bold text-zinc-800 hover:bg-zinc-100 transition-colors flex items-center gap-2"><i data-lucide="refresh-cw" class="w-4 h-4"></i> Refresh details</button>
                     <button id="signOutBtn" type="button" class="rounded-xl border border-zinc-300 px-4 py-2.5 text-sm font-bold text-zinc-800 hover:bg-zinc-100 transition-colors flex items-center gap-2"><i data-lucide="log-out" class="w-4 h-4"></i> Sign out</button>
+                    <button id="deleteAccountBtn" type="button" class="rounded-xl border border-rose-300 px-4 py-2.5 text-sm font-bold text-rose-700 hover:bg-rose-50 transition-colors flex items-center gap-2"><i data-lucide="trash-2" class="w-4 h-4"></i> Delete account</button>
                 </div>
             </div>
         </section>
@@ -164,14 +193,20 @@
                 <div class="space-y-4 p-6 bg-zinc-50 rounded-2xl border border-zinc-200/60 flex flex-col justify-between">
                     <div class="space-y-3">
                         <div class="flex flex-col gap-1">
-                            <span class="text-[10px] font-mono font-bold uppercase text-zinc-400 tracking-wider">Web App</span>
+                            <span class="text-[10px] font-mono font-bold uppercase text-zinc-400 tracking-wider">Pet Travel Community</span>
                             <h4 class="text-base font-bold text-zinc-900 flex items-center gap-2">
                                 <i data-lucide="cat" class="w-4 h-4 text-indigo-600"></i> PetSetLife
                             </h4>
                         </div>
-                        <p class="text-zinc-600 text-sm leading-relaxed">
-                            A simple companion journal for your pets. Track daily food intake, log vet schedules, and keep health records organized in one private panel. Generates a custom QR code profile you can link directly to physical collar tags.
-                        </p>
+                        <div class="text-zinc-600 text-sm leading-relaxed space-y-2">
+                            <p class="font-semibold text-zinc-800">Explore the World While Caring for Pets</p>
+                            <ul class="space-y-1">
+                                <li>✅ Become a digital nomad pawfessional or host</li>
+                                <li>✅ Win-win for hosts and pet sitters.</li>
+                                <li>✅ Lifetime access, no subscription fees or platform lock-in.</li>
+                                <li>✅ Get a shareable profile card for LinkedIn, Instagram, Twitter - raise awareness among your existing network and beyond.</li>
+                            </ul>
+                        </div>
                     </div>
                     <div class="flex gap-4 text-sm font-semibold pt-3">
                         <a href="#account" data-href="https://petsetlife.byphil.eu/" class="tool-link text-zinc-400 transition-colors flex items-center gap-1 underline underline-offset-4 decoration-2">
@@ -384,6 +419,78 @@
         const OTP_STORAGE_KEY = 'byphil_auth_otp_id';
         const EMAIL_STORAGE_KEY = 'byphil_auth_email';
 
+        function setAuthStep(step) {
+            const title = document.getElementById('authStepTitle');
+            const badge = document.getElementById('authStepBadge');
+            const otpGroup = document.getElementById('otpGroup');
+            const requestBtn = document.getElementById('requestOtpBtn');
+            const verifyBtn = document.getElementById('verifyOtpBtn');
+            const changeEmailBtn = document.getElementById('changeEmailBtn');
+            const emailInput = document.getElementById('authEmail');
+
+            if (step === 'otp') {
+                title.innerHTML = '<i data-lucide="shield-check" class="w-4 h-4 text-zinc-500"></i> Step 2: Verify Code';
+                badge.textContent = '2 / 2';
+                otpGroup.classList.remove('hidden');
+                requestBtn.classList.add('hidden');
+                verifyBtn.classList.remove('hidden');
+                changeEmailBtn.classList.remove('hidden');
+                emailInput.readOnly = true;
+                emailInput.classList.add('bg-zinc-100');
+                document.getElementById('otpCode').focus();
+            } else {
+                title.innerHTML = '<i data-lucide="at-sign" class="w-4 h-4 text-zinc-500"></i> Step 1: Request OTP';
+                badge.textContent = '1 / 2';
+                otpGroup.classList.add('hidden');
+                requestBtn.classList.remove('hidden');
+                verifyBtn.classList.add('hidden');
+                changeEmailBtn.classList.add('hidden');
+                emailInput.readOnly = false;
+                emailInput.classList.remove('bg-zinc-100');
+                document.getElementById('otpCode').value = '';
+            }
+
+            lucide.createIcons();
+        }
+
+        function resetOtpFlow() {
+            localStorage.removeItem(OTP_STORAGE_KEY);
+            setAuthStep('email');
+        }
+
+        function setupMobileMenu() {
+            const button = document.getElementById('mobileMenuButton');
+            const panel = document.getElementById('mobileMenuPanel');
+            if (!button || !panel) return;
+
+            const closeMenu = () => {
+                panel.classList.add('hidden');
+                button.setAttribute('aria-expanded', 'false');
+            };
+
+            button.addEventListener('click', () => {
+                const willOpen = panel.classList.contains('hidden');
+                panel.classList.toggle('hidden', !willOpen);
+                button.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+            });
+
+            panel.querySelectorAll('.mobile-nav-link').forEach((link) => {
+                link.addEventListener('click', closeMenu);
+            });
+
+            document.addEventListener('click', (event) => {
+                if (panel.classList.contains('hidden')) return;
+                if (panel.contains(event.target) || button.contains(event.target)) return;
+                closeMenu();
+            });
+
+            window.addEventListener('resize', () => {
+                if (window.innerWidth >= 768) {
+                    closeMenu();
+                }
+            });
+        }
+
         function showError(message) {
             const notice = document.getElementById('authNotice');
             const error = document.getElementById('authError');
@@ -440,6 +547,8 @@
             if (!record || !record.email) {
                 document.getElementById('accountPanel').classList.add('hidden');
                 document.getElementById('authPanel').classList.remove('hidden');
+                document.getElementById('licenseActions').classList.add('hidden');
+                setAuthStep('email');
                 updateToolAccess(false);
                 return;
             }
@@ -452,11 +561,88 @@
             document.getElementById('accountTier').textContent = tier;
             document.getElementById('accountCreated').textContent = formatDate(record.created);
             document.getElementById('accountAppsCount').textContent = String(appCount);
-            document.getElementById('accountLicense').textContent = record.license_key ? 'Yes' : 'No';
+            const hasLinkedLicense = Boolean(record.license_key);
+            document.getElementById('accountLicense').textContent = hasLinkedLicense ? 'Yes' : 'No';
+
+            if (hasLinkedLicense) {
+                document.getElementById('licenseActions').classList.add('hidden');
+            } else {
+                document.getElementById('licenseActions').classList.remove('hidden');
+            }
 
             document.getElementById('accountPanel').classList.remove('hidden');
             document.getElementById('authPanel').classList.add('hidden');
             updateToolAccess(true);
+        }
+
+        async function deleteAccount() {
+            clearMessages();
+
+            const decision = window.confirm('Delete your account and related data permanently? This cannot be undone.');
+            if (!decision) return;
+
+            const phrase = window.prompt('Type DELETE to confirm account deletion.');
+            if (phrase !== 'DELETE') {
+                showError('Account deletion cancelled. Confirmation phrase did not match.');
+                return;
+            }
+
+            try {
+                const response = await apiRequest('/auth/delete-account', {
+                    method: 'POST',
+                    body: JSON.stringify({ confirmation: 'DELETE' }),
+                });
+                const data = await response.json().catch(() => ({}));
+
+                if (!response.ok || !data?.success) {
+                    showError(data?.error || 'Could not delete account.');
+                    return;
+                }
+
+                localStorage.removeItem(TOKEN_STORAGE_KEY);
+                localStorage.removeItem(OTP_STORAGE_KEY);
+                localStorage.removeItem(EMAIL_STORAGE_KEY);
+                document.getElementById('authEmail').value = '';
+                document.getElementById('otpCode').value = '';
+                document.getElementById('licenseKeyInput').value = '';
+                renderAccount(null);
+                showNotice('Account deleted successfully.');
+            } catch (error) {
+                showError('Failed to delete account right now. Please try again.');
+            }
+        }
+
+        async function linkLicense() {
+            clearMessages();
+            const licenseInput = document.getElementById('licenseKeyInput');
+            const licenseKey = licenseInput.value.trim();
+
+            if (!licenseKey) {
+                showError('Please enter a license key or subscription ID.');
+                return;
+            }
+
+            try {
+                const response = await apiRequest('/auth/link-license', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        project_id: 'ai_summary_helper',
+                        license_key: licenseKey,
+                    }),
+                });
+                const data = await response.json().catch(() => ({}));
+
+                if (!response.ok || !data?.success) {
+                    showError(data?.error || 'Could not link your license.');
+                    return;
+                }
+
+                licenseInput.value = '';
+                showNotice('License linked successfully.');
+                await loadAccountFromToken();
+            } catch (error) {
+                showError('Failed to link license right now. Please try again.');
+            }
         }
 
         async function apiRequest(path, options = {}) {
@@ -525,7 +711,8 @@
 
                 localStorage.setItem(OTP_STORAGE_KEY, data.otpId);
                 localStorage.setItem(EMAIL_STORAGE_KEY, email);
-                showNotice('OTP sent. Check your inbox and enter the code in Step 2.');
+                setAuthStep('otp');
+                showNotice('OTP sent. Check your inbox and enter the code.');
             } catch (error) {
                 showError('Failed to request OTP. Please try again.');
             }
@@ -608,13 +795,17 @@
             localStorage.removeItem(TOKEN_STORAGE_KEY);
             localStorage.removeItem(OTP_STORAGE_KEY);
             localStorage.removeItem(EMAIL_STORAGE_KEY);
+            document.getElementById('authEmail').value = '';
             document.getElementById('otpCode').value = '';
+            document.getElementById('licenseKeyInput').value = '';
             renderAccount(null);
             showNotice('Signed out.');
         }
 
         document.addEventListener("DOMContentLoaded", function() {
             lucide.createIcons();
+            setupMobileMenu();
+            setAuthStep(localStorage.getItem(OTP_STORAGE_KEY) ? 'otp' : 'email');
 
             const savedEmail = localStorage.getItem(EMAIL_STORAGE_KEY);
             if (savedEmail) {
@@ -623,9 +814,12 @@
 
             document.getElementById('requestOtpBtn').addEventListener('click', requestOtp);
             document.getElementById('verifyOtpBtn').addEventListener('click', verifyOtp);
+            document.getElementById('changeEmailBtn').addEventListener('click', resetOtpFlow);
             document.getElementById('refreshAccountBtn').addEventListener('click', refreshAccount);
             document.getElementById('downloadDataBtn').addEventListener('click', downloadAccountData);
+            document.getElementById('linkLicenseBtn').addEventListener('click', linkLicense);
             document.getElementById('signOutBtn').addEventListener('click', signOut);
+            document.getElementById('deleteAccountBtn').addEventListener('click', deleteAccount);
 
             updateToolAccess(false);
             loadAccountFromToken();
