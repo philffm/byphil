@@ -44,6 +44,7 @@
             <span class="font-bold text-base tracking-tight text-zinc-900">byphil<span class="text-zinc-400 group-hover:text-zinc-900 transition-colors">.</span>eu</span>
         </a>
         <nav class="flex items-center gap-6 text-sm text-zinc-500 font-semibold">
+            <a href="#account" class="hover:text-zinc-900 transition-colors flex items-center gap-1.5"><i data-lucide="user-round" class="w-4 h-4"></i> Account</a>
             <a href="#tools" class="hover:text-zinc-900 transition-colors flex items-center gap-1.5"><i data-lucide="wrench" class="w-4 h-4"></i> My Tools</a>
             <a href="#pass" class="hover:text-zinc-900 transition-colors flex items-center gap-1.5"><i data-lucide="key-round" class="w-4 h-4"></i> Support Pass</a>
             <a href="impressum.html" class="hover:text-zinc-900 transition-colors">Impressum</a>
@@ -64,12 +65,77 @@
                 <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
                 <span class="flex items-center gap-1.5"><i data-lucide="server" class="w-4 h-4 text-zinc-400"></i> Sovereign German servers based in Frankfurt</span>
             </div>
+            <div class="pt-2">
+                <a href="#account" class="inline-flex items-center gap-2 bg-zinc-900 hover:bg-zinc-800 text-white text-sm font-bold px-5 py-3 rounded-xl transition-all shadow-sm">
+                    <i data-lucide="mail-check" class="w-4 h-4"></i> Sign in or sign up with OTP
+                </a>
+            </div>
+        </section>
+
+        <section id="account" class="bg-zinc-50 border border-zinc-200 rounded-2xl p-6 sm:p-10 space-y-8">
+            <div class="space-y-1">
+                <span class="text-xs font-mono tracking-widest text-zinc-500 uppercase font-bold">Unified Login</span>
+                <h3 class="text-2xl font-bold text-zinc-900">Your byphil Account</h3>
+                <p class="text-zinc-600 text-sm">Use one email login for all tools. New users are created automatically on first OTP request.</p>
+            </div>
+
+            <div id="authNotice" class="hidden rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"></div>
+            <div id="authError" class="hidden rounded-xl border border-rose-300 bg-rose-50 px-4 py-3 text-sm text-rose-800"></div>
+
+            <div id="authPanel" class="grid md:grid-cols-2 gap-6">
+                <div class="space-y-4 bg-white border border-zinc-200 rounded-2xl p-5">
+                    <h4 class="text-base font-bold text-zinc-900 flex items-center gap-2"><i data-lucide="at-sign" class="w-4 h-4 text-zinc-500"></i> Step 1: Request OTP</h4>
+                    <label class="block text-sm font-semibold text-zinc-700" for="authEmail">Email</label>
+                    <input id="authEmail" type="email" placeholder="you@example.com" class="w-full rounded-xl border border-zinc-300 px-3 py-2 text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-900 focus:outline-none" />
+                    <button id="requestOtpBtn" type="button" class="w-full rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-bold text-white hover:bg-zinc-800 transition-colors">Send OTP Code</button>
+                </div>
+
+                <div class="space-y-4 bg-white border border-zinc-200 rounded-2xl p-5">
+                    <h4 class="text-base font-bold text-zinc-900 flex items-center gap-2"><i data-lucide="shield-check" class="w-4 h-4 text-zinc-500"></i> Step 2: Verify Code</h4>
+                    <label class="block text-sm font-semibold text-zinc-700" for="otpCode">6-digit OTP code</label>
+                    <input id="otpCode" type="text" inputmode="numeric" maxlength="6" placeholder="123456" class="w-full rounded-xl border border-zinc-300 px-3 py-2 text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-900 focus:outline-none" />
+                    <button id="verifyOtpBtn" type="button" class="w-full rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-bold text-white hover:bg-zinc-800 transition-colors">Verify and Sign in</button>
+                    <p class="text-xs text-zinc-500">No password needed. Sign in and sign up share the same OTP flow.</p>
+                </div>
+            </div>
+
+            <div id="accountPanel" class="hidden bg-white border border-zinc-200 rounded-2xl p-6 space-y-5">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <h4 class="text-lg font-bold text-zinc-900">Account Overview</h4>
+                        <p id="accountEmail" class="text-sm text-zinc-600"></p>
+                    </div>
+                    <span id="accountTier" class="inline-flex items-center gap-1 rounded-full bg-zinc-100 px-3 py-1 text-xs font-bold uppercase text-zinc-700">Free</span>
+                </div>
+                <div class="grid sm:grid-cols-3 gap-4 text-sm">
+                    <div class="rounded-xl border border-zinc-200 bg-zinc-50 p-3">
+                        <p class="text-zinc-500">Member since</p>
+                        <p id="accountCreated" class="font-semibold text-zinc-900">-</p>
+                    </div>
+                    <div class="rounded-xl border border-zinc-200 bg-zinc-50 p-3">
+                        <p class="text-zinc-500">Apps with data</p>
+                        <p id="accountAppsCount" class="font-semibold text-zinc-900">0</p>
+                    </div>
+                    <div class="rounded-xl border border-zinc-200 bg-zinc-50 p-3">
+                        <p class="text-zinc-500">License linked</p>
+                        <p id="accountLicense" class="font-semibold text-zinc-900">No</p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-3">
+                    <button id="downloadDataBtn" type="button" class="rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-bold text-white hover:bg-zinc-800 transition-colors flex items-center gap-2"><i data-lucide="download" class="w-4 h-4"></i> Download all account data</button>
+                    <button id="refreshAccountBtn" type="button" class="rounded-xl border border-zinc-300 px-4 py-2.5 text-sm font-bold text-zinc-800 hover:bg-zinc-100 transition-colors flex items-center gap-2"><i data-lucide="refresh-cw" class="w-4 h-4"></i> Refresh details</button>
+                    <button id="signOutBtn" type="button" class="rounded-xl border border-zinc-300 px-4 py-2.5 text-sm font-bold text-zinc-800 hover:bg-zinc-100 transition-colors flex items-center gap-2"><i data-lucide="log-out" class="w-4 h-4"></i> Sign out</button>
+                </div>
+            </div>
         </section>
 
         <section id="tools" class="space-y-8 pt-10 border-t border-zinc-100">
-            <div>
+            <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+                <div>
                 <span class="text-xs font-mono tracking-widest text-zinc-400 uppercase font-bold">What I build</span>
                 <h3 class="text-2xl font-bold text-zinc-900 mt-1">Available Tools</h3>
+                </div>
+                <p id="toolsGateStatus" class="text-xs font-semibold text-zinc-500">Sign in to unlock direct access links.</p>
             </div>
 
             <div class="grid md:grid-cols-3 gap-8">
@@ -88,7 +154,7 @@
                         </p>
                     </div>
                     <div class="flex gap-4 text-sm font-semibold pt-3">
-                        <a href="https://chrome.google.com/webstore/detail/ai-summary-helper-summari/hldbejcjaedipeegjcinmhejdndchkmb" target="_blank" class="text-zinc-900 hover:text-indigo-600 transition-colors flex items-center gap-1 underline underline-offset-4 decoration-2">
+                        <a href="#account" data-href="https://chrome.google.com/webstore/detail/ai-summary-helper-summari/hldbejcjaedipeegjcinmhejdndchkmb" class="tool-link text-zinc-400 transition-colors flex items-center gap-1 underline underline-offset-4 decoration-2">
                             Chrome Web Store <i data-lucide="arrow-up-right" class="w-4 h-4 text-zinc-400"></i>
                         </a>
                     </div>
@@ -108,32 +174,29 @@
                         </p>
                     </div>
                     <div class="flex gap-4 text-sm font-semibold pt-3">
-                        <a href="https://petsetlife.byphil.eu/" target="_blank" class="text-zinc-900 hover:text-indigo-600 transition-colors flex items-center gap-1 underline underline-offset-4 decoration-2">
+                        <a href="#account" data-href="https://petsetlife.byphil.eu/" class="tool-link text-zinc-400 transition-colors flex items-center gap-1 underline underline-offset-4 decoration-2">
                             Open PetSetLife <i data-lucide="arrow-up-right" class="w-4 h-4 text-zinc-400"></i>
                         </a>
                     </div>
                 </div>
 
-                <!-- Ghost Card Teaser -->
-                <div class="p-6 rounded-2xl border-2 border-dashed border-zinc-200 bg-zinc-50/30 flex flex-col justify-between opacity-90 transition-all hover:border-zinc-300">
+                <!-- Tool 3 -->
+                <div class="space-y-4 p-6 bg-zinc-50 rounded-2xl border border-zinc-200/60 flex flex-col justify-between">
                     <div class="space-y-3">
                         <div class="flex flex-col gap-1">
-                            <span class="text-[10px] font-mono font-bold uppercase text-zinc-400 tracking-wider">Idea Stage</span>
-                            <h4 class="text-base font-bold text-zinc-500 flex items-center gap-2">
-                                <i data-lucide="plus-circle" class="w-4 h-4 text-zinc-400"></i> Future Utilities
+                            <span class="text-[10px] font-mono font-bold uppercase text-zinc-400 tracking-wider">Knowledge Graph</span>
+                            <h4 class="text-base font-bold text-zinc-900 flex items-center gap-2">
+                                <i data-lucide="network" class="w-4 h-4 text-indigo-600"></i> Matrix
                             </h4>
                         </div>
-                        <p class="text-zinc-400 text-sm leading-relaxed italic">
-                            Have ideas for ultra-private calculation sheets, local micro-converters, or automated tracking scripts? Your support actively funds the research and deployment of next utilities.
+                        <p class="text-zinc-600 text-sm leading-relaxed">
+                            Explore connected ideas and reading behavior inside the matrix environment. Built for discovery and long-term knowledge mapping.
                         </p>
                     </div>
-                    <div class="pt-4 flex flex-col gap-2">
-                        <a href="#pricing" class="text-xs font-bold text-indigo-600 hover:text-indigo-700 transition-colors flex items-center gap-1 group/btn">
-                            Back Future Development <i data-lucide="arrow-right" class="w-3.5 h-3.5 transform group-hover/btn:translate-x-0.5 transition-transform"></i>
+                    <div class="flex gap-4 text-sm font-semibold pt-3">
+                        <a href="#account" data-href="http://matrix.byphil.eu/" class="tool-link text-zinc-400 transition-colors flex items-center gap-1 underline underline-offset-4 decoration-2">
+                            Open Matrix <i data-lucide="arrow-up-right" class="w-4 h-4 text-zinc-400"></i>
                         </a>
-                        <div class="text-[10px] font-medium text-zinc-400 flex items-center gap-1">
-                            <i data-lucide="info" class="w-3 h-3"></i> Shaped by community votes
-                        </div>
                     </div>
                 </div>
 
@@ -314,8 +377,258 @@
     </footer>
 
     <script>
+        const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:3000/v1'
+            : 'https://api.byphil.eu/v1';
+        const TOKEN_STORAGE_KEY = 'byphil_auth_token';
+        const OTP_STORAGE_KEY = 'byphil_auth_otp_id';
+        const EMAIL_STORAGE_KEY = 'byphil_auth_email';
+
+        function showError(message) {
+            const notice = document.getElementById('authNotice');
+            const error = document.getElementById('authError');
+            notice.classList.add('hidden');
+            error.textContent = message;
+            error.classList.remove('hidden');
+        }
+
+        function showNotice(message) {
+            const notice = document.getElementById('authNotice');
+            const error = document.getElementById('authError');
+            error.classList.add('hidden');
+            notice.textContent = message;
+            notice.classList.remove('hidden');
+        }
+
+        function clearMessages() {
+            document.getElementById('authNotice').classList.add('hidden');
+            document.getElementById('authError').classList.add('hidden');
+        }
+
+        function formatDate(isoDate) {
+            if (!isoDate) return '-';
+            const parsed = new Date(isoDate);
+            if (Number.isNaN(parsed.getTime())) return '-';
+            return parsed.toLocaleDateString();
+        }
+
+        function updateToolAccess(isLoggedIn) {
+            const links = document.querySelectorAll('.tool-link');
+            const gateLabel = document.getElementById('toolsGateStatus');
+
+            links.forEach((link) => {
+                const targetHref = link.getAttribute('data-href');
+                if (isLoggedIn) {
+                    link.setAttribute('href', targetHref);
+                    link.setAttribute('target', '_blank');
+                    link.classList.remove('text-zinc-400');
+                    link.classList.add('text-zinc-900', 'hover:text-indigo-600');
+                } else {
+                    link.setAttribute('href', '#account');
+                    link.removeAttribute('target');
+                    link.classList.add('text-zinc-400');
+                    link.classList.remove('text-zinc-900', 'hover:text-indigo-600');
+                }
+            });
+
+            gateLabel.textContent = isLoggedIn
+                ? 'Signed in: all direct links unlocked.'
+                : 'Sign in to unlock direct access links.';
+        }
+
+        function renderAccount(record) {
+            if (!record || !record.email) {
+                document.getElementById('accountPanel').classList.add('hidden');
+                document.getElementById('authPanel').classList.remove('hidden');
+                updateToolAccess(false);
+                return;
+            }
+
+            const tier = String(record.subscription_status || 'free').toUpperCase();
+            const appData = record.app_data && typeof record.app_data === 'object' ? record.app_data : {};
+            const appCount = Object.keys(appData).length;
+
+            document.getElementById('accountEmail').textContent = record.email;
+            document.getElementById('accountTier').textContent = tier;
+            document.getElementById('accountCreated').textContent = formatDate(record.created);
+            document.getElementById('accountAppsCount').textContent = String(appCount);
+            document.getElementById('accountLicense').textContent = record.license_key ? 'Yes' : 'No';
+
+            document.getElementById('accountPanel').classList.remove('hidden');
+            document.getElementById('authPanel').classList.add('hidden');
+            updateToolAccess(true);
+        }
+
+        async function apiRequest(path, options = {}) {
+            const token = localStorage.getItem(TOKEN_STORAGE_KEY);
+            const headers = {
+                'Content-Type': 'application/json',
+                ...(options.headers || {}),
+            };
+
+            if (token) {
+                headers.Authorization = `Bearer ${token}`;
+            }
+
+            const response = await fetch(`${API_BASE}${path}`, {
+                ...options,
+                headers,
+            });
+
+            return response;
+        }
+
+        async function loadAccountFromToken() {
+            const token = localStorage.getItem(TOKEN_STORAGE_KEY);
+            if (!token) {
+                renderAccount(null);
+                return;
+            }
+
+            try {
+                const response = await apiRequest('/auth/me', { method: 'GET' });
+                const data = await response.json();
+
+                if (!response.ok || !data?.success) {
+                    localStorage.removeItem(TOKEN_STORAGE_KEY);
+                    renderAccount(null);
+                    return;
+                }
+
+                renderAccount(data.record);
+            } catch (error) {
+                renderAccount(null);
+            }
+        }
+
+        async function requestOtp() {
+            clearMessages();
+            const emailInput = document.getElementById('authEmail');
+            const email = emailInput.value.trim().toLowerCase();
+
+            if (!email) {
+                showError('Please enter a valid email address.');
+                return;
+            }
+
+            try {
+                const response = await apiRequest('/auth/request-otp', {
+                    method: 'POST',
+                    body: JSON.stringify({ email }),
+                });
+
+                const data = await response.json();
+                if (!response.ok || !data?.success || !data?.otpId) {
+                    showError(data?.error || 'Could not send OTP code.');
+                    return;
+                }
+
+                localStorage.setItem(OTP_STORAGE_KEY, data.otpId);
+                localStorage.setItem(EMAIL_STORAGE_KEY, email);
+                showNotice('OTP sent. Check your inbox and enter the code in Step 2.');
+            } catch (error) {
+                showError('Failed to request OTP. Please try again.');
+            }
+        }
+
+        async function verifyOtp() {
+            clearMessages();
+            const otpId = localStorage.getItem(OTP_STORAGE_KEY);
+            const code = document.getElementById('otpCode').value.trim();
+
+            if (!otpId) {
+                showError('Request an OTP first.');
+                return;
+            }
+            if (!code) {
+                showError('Please enter your OTP code.');
+                return;
+            }
+
+            try {
+                const response = await apiRequest('/auth/verify-otp', {
+                    method: 'POST',
+                    body: JSON.stringify({ otpId, code }),
+                });
+
+                const data = await response.json();
+                if (!response.ok || !data?.success || !data?.token) {
+                    showError(data?.error || 'OTP verification failed.');
+                    return;
+                }
+
+                localStorage.setItem(TOKEN_STORAGE_KEY, data.token);
+                localStorage.removeItem(OTP_STORAGE_KEY);
+                renderAccount(data.record);
+                showNotice('Signed in successfully. Your tool links are now unlocked.');
+            } catch (error) {
+                showError('Failed to verify OTP. Please try again.');
+            }
+        }
+
+        async function refreshAccount() {
+            clearMessages();
+            await loadAccountFromToken();
+            if (!document.getElementById('accountPanel').classList.contains('hidden')) {
+                showNotice('Account details updated.');
+            }
+        }
+
+        async function downloadAccountData() {
+            clearMessages();
+            try {
+                const response = await apiRequest('/auth/export-data', { method: 'GET' });
+                if (!response.ok) {
+                    const data = await response.json().catch(() => ({}));
+                    showError(data?.error || 'Could not export account data.');
+                    return;
+                }
+
+                const blob = await response.blob();
+                const disposition = response.headers.get('content-disposition') || '';
+                const filenameMatch = disposition.match(/filename="([^"]+)"/);
+                const filename = filenameMatch ? filenameMatch[1] : 'byphil-account-export.json';
+
+                const objectUrl = URL.createObjectURL(blob);
+                const tempLink = document.createElement('a');
+                tempLink.href = objectUrl;
+                tempLink.download = filename;
+                document.body.appendChild(tempLink);
+                tempLink.click();
+                tempLink.remove();
+                URL.revokeObjectURL(objectUrl);
+
+                showNotice('Account export downloaded.');
+            } catch (error) {
+                showError('Could not download account data right now.');
+            }
+        }
+
+        function signOut() {
+            localStorage.removeItem(TOKEN_STORAGE_KEY);
+            localStorage.removeItem(OTP_STORAGE_KEY);
+            localStorage.removeItem(EMAIL_STORAGE_KEY);
+            document.getElementById('otpCode').value = '';
+            renderAccount(null);
+            showNotice('Signed out.');
+        }
+
         document.addEventListener("DOMContentLoaded", function() {
             lucide.createIcons();
+
+            const savedEmail = localStorage.getItem(EMAIL_STORAGE_KEY);
+            if (savedEmail) {
+                document.getElementById('authEmail').value = savedEmail;
+            }
+
+            document.getElementById('requestOtpBtn').addEventListener('click', requestOtp);
+            document.getElementById('verifyOtpBtn').addEventListener('click', verifyOtp);
+            document.getElementById('refreshAccountBtn').addEventListener('click', refreshAccount);
+            document.getElementById('downloadDataBtn').addEventListener('click', downloadAccountData);
+            document.getElementById('signOutBtn').addEventListener('click', signOut);
+
+            updateToolAccess(false);
+            loadAccountFromToken();
         });
 
         function setBilling(interval) {
