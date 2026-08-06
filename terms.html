@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>byphil. — Simple Terms of Service</title>
-    <!-- Tailwind CSS CDN -->
+    <meta name="robots" content="noindex, nofollow">
+    <title>byphil. — Terms, Privacy, Refunds & Impressum</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -16,7 +16,7 @@
             }
         }
     </script>
-    <script src="[https://unpkg.com/lucide@latest](https://unpkg.com/lucide@latest)"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/lucide.js"></script>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="min-h-screen flex flex-col justify-between font-sans">
@@ -27,35 +27,147 @@
         <nav class="flex items-center gap-6 text-xs text-zinc-400 font-semibold">
             <a href="index.html#tools" class="hover:text-white transition-colors">My Tools</a>
             <a href="index.html#pass" class="hover:text-white transition-colors">Support Pass</a>
-            <a href="impressum.html" class="hover:text-white transition-colors">Impressum</a>
+            <a href="#impressum" class="hover:text-white transition-colors">Impressum</a>
         </nav>
     </header>
 
     <main class="max-w-3xl mx-auto w-full px-6 flex-1 py-4 space-y-8">
         <div class="space-y-2 border-b border-zinc-900 pb-4">
-            <span class="text-[10px] font-mono tracking-widest text-zinc-500 uppercase">Usage Agreement</span>
-            <h2 class="text-2xl font-black text-white">📜 Simple Terms of Service</h2>
+            <span class="text-[10px] font-mono tracking-widest text-zinc-500 uppercase">Legal Information</span>
+            <h2 class="text-2xl font-black text-white">Terms, Privacy, Refunds & Impressum</h2>
         </div>
 
-        <article class="text-zinc-300 text-xs leading-relaxed space-y-6">
-            <section class="space-y-2">
-                <h3 class="font-bold text-white text-sm">1. General Agreement</h3>
-                <p>These terms govern your use of the tools created by Phil Wornath (including AI Summary Helper and PetSetLife). By acquiring a Support Pass, you unlock premium tiers of our apps using safe, passwordless One-Time Password (OTP) email logins.</p>
+        <article class="text-zinc-300 text-xs leading-relaxed space-y-10">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 border-b border-zinc-900 pb-6">
+                <a href="#terms-of-service" class="rounded-xl border border-zinc-800 px-3 py-3 hover:bg-zinc-900 transition-colors">
+                    <p class="font-semibold text-white text-xs">Terms</p>
+                    <p class="text-[11px] text-zinc-500 pt-1">Usage agreement</p>
+                </a>
+                <a href="#privacy" class="rounded-xl border border-zinc-800 px-3 py-3 hover:bg-zinc-900 transition-colors">
+                    <p class="font-semibold text-white text-xs">Privacy</p>
+                    <p class="text-[11px] text-zinc-500 pt-1">Data handling</p>
+                </a>
+                <a href="#refunds" class="rounded-xl border border-zinc-800 px-3 py-3 hover:bg-zinc-900 transition-colors">
+                    <p class="font-semibold text-white text-xs">Refunds</p>
+                    <p class="text-[11px] text-zinc-500 pt-1">Cancellations</p>
+                </a>
+                <a href="#impressum" class="rounded-xl border border-zinc-800 px-3 py-3 hover:bg-zinc-900 transition-colors">
+                    <p class="font-semibold text-white text-xs">Impressum</p>
+                    <p class="text-[11px] text-zinc-500 pt-1">Legal operator info</p>
+                </a>
+            </div>
+
+            <section id="terms-of-service" class="space-y-4 scroll-mt-10 border-b border-zinc-900 pb-8">
+                <div class="space-y-1">
+                    <span class="text-[10px] font-mono tracking-widest text-zinc-500 uppercase">Usage Agreement</span>
+                    <h3 class="font-bold text-white text-lg">Terms of Service</h3>
+                </div>
+                <div class="space-y-4">
+                    <section class="space-y-2">
+                        <h4 class="font-bold text-white text-sm">1. General Agreement</h4>
+                        <p>These terms govern your use of the tools created by Phil Wornath, including AI Summary Helper, PetSetLife, Matrix, and related byphil services. By using the services or acquiring a Support Pass, you agree to these terms.</p>
+                    </section>
+                    <section class="space-y-2">
+                        <h4 class="font-bold text-white text-sm">2. Account & License Ownership</h4>
+                        <p>Subscriptions and premium access are linked directly to your authenticated email address. You are responsible for keeping access to your email account secure and for safeguarding any active session on your devices.</p>
+                    </section>
+                    <section class="space-y-2">
+                        <h4 class="font-bold text-white text-sm">3. Acceptable Use Guidelines</h4>
+                        <p>The tools are intended for normal human use in reading, research, tracking, and personal organization. Automated abuse, continuous high-volume stress testing, unauthorized scraping through our gateways, or reselling access may lead to suspension or removal of service access.</p>
+                    </section>
+                    <section class="space-y-2">
+                        <h4 class="font-bold text-white text-sm">4. Billing Provider</h4>
+                        <p>Subscription processing, VAT handling, and checkout execution may be managed by authorized payment providers such as Paddle or Stripe, depending on the product flow in use at the time of purchase.</p>
+                    </section>
+                </div>
             </section>
 
-            <section class="space-y-2">
-                <h3 class="font-bold text-white text-sm">2. Account & License Ownership</h3>
-                <p>Subscriptions are linked directly to your authenticated personal email address. You are responsible for keeping your email session token secure.</p>
+            <section id="privacy" class="space-y-4 scroll-mt-10 border-b border-zinc-900 pb-8">
+                <div class="space-y-1">
+                    <span class="text-[10px] font-mono tracking-widest text-zinc-500 uppercase">Compliance Statement</span>
+                    <h3 class="font-bold text-white text-lg">Privacy Policy & GDPR Compliance</h3>
+                </div>
+                <div class="space-y-4">
+                    <section class="space-y-2">
+                        <h4 class="font-bold text-white text-sm">1. Data Controller</h4>
+                        <p>Phil Wornath is the operator of byphil services. Contact regarding data protection or privacy requests: hi@philwornath.de.</p>
+                    </section>
+                    <section class="space-y-2">
+                        <h4 class="font-bold text-white text-sm">2. Minimalist Data Philosophy</h4>
+                        <p>Digital sovereignty and minimal data retention are core principles. Commercial trackers, marketing pixels, and third-party behavioral cookie systems are avoided wherever possible. Only the minimum data needed to provide the service is processed.</p>
+                    </section>
+                    <section class="space-y-2">
+                        <h4 class="font-bold text-white text-sm">3. AI Summary Helper Data Routing</h4>
+                        <p>When a summary is generated, content may be routed through secure byphil infrastructure before being sent to the selected AI provider. Prompts and article content are not stored permanently for profiling or advertising purposes.</p>
+                    </section>
+                    <section class="space-y-2">
+                        <h4 class="font-bold text-white text-sm">4. PetSetLife and Account Data</h4>
+                        <p>Account-linked records, preferences, and app data are stored only as necessary to operate the tools. Data is not sold, rented, or shared for advertising use. Authenticated users can export or delete their account data directly through the account area when available.</p>
+                    </section>
+                    <section class="space-y-2">
+                        <h4 class="font-bold text-white text-sm">5. Your Statutory Rights</h4>
+                        <p>Under the GDPR, you have rights to access, rectification, deletion, and restriction of processing where applicable. Requests can be sent to hi@philwornath.de.</p>
+                    </section>
+                </div>
             </section>
 
-            <section class="space-y-2">
-                <h3 class="font-bold text-white text-sm">3. Acceptable Use Guidelines</h3>
-                <p>My tools are intended for standard human reading, tracking, and personal organization. Automated scripting, continuous high-volume server stress-testing, bulk scraping via our gateways, or trying to resell proxy bandwidth will result in immediate suspension of your Support Pass without prior warning.</p>
+            <section id="refunds" class="space-y-4 scroll-mt-10 border-b border-zinc-900 pb-8">
+                <div class="space-y-1">
+                    <span class="text-[10px] font-mono tracking-widest text-zinc-500 uppercase">Customer Guarantee</span>
+                    <h3 class="font-bold text-white text-lg">Refunds & Cancellation Policy</h3>
+                </div>
+                <div class="space-y-4">
+                    <section class="space-y-2">
+                        <h4 class="font-bold text-white text-sm">1. EU Withdrawal Context</h4>
+                        <p>For digital services, statutory withdrawal rights may expire once service performance has started. This can include first use of premium or subscription-based features.</p>
+                    </section>
+                    <section class="space-y-2">
+                        <h4 class="font-bold text-white text-sm">2. Voluntary Satisfaction Guarantee</h4>
+                        <p>A voluntary 14-day satisfaction guarantee may be offered for Support Pass purchases. Refund requests within that period should be made through the payment receipt flow or by contacting support with the purchase details.</p>
+                    </section>
+                    <section class="space-y-2">
+                        <h4 class="font-bold text-white text-sm">3. Subscription Cancellations</h4>
+                        <p>Active subscriptions can be cancelled before the next billing cycle. When cancelled, access generally remains active until the end of the already paid billing period unless otherwise stated by the payment provider.</p>
+                    </section>
+                </div>
             </section>
 
-            <section class="space-y-2">
-                <h3 class="font-bold text-white text-sm">4. Billing Provider</h3>
-                <p>Subscription processing, localized European VAT tax calculations, and secure checkout frameworks are managed entirely by Paddle.com Market Ltd as our authorized Merchant of Record.</p>
+            <section id="impressum" class="space-y-4 scroll-mt-10">
+                <div class="space-y-1">
+                    <span class="text-[10px] font-mono tracking-widest text-zinc-500 uppercase">Statutory Disclosures</span>
+                    <h3 class="font-bold text-white text-lg">Impressum / Legal Information</h3>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="space-y-6">
+                        <section class="space-y-2">
+                            <h4 class="font-bold text-white text-sm">Operator under German Law</h4>
+                            <p class="font-semibold text-white">Phil Wornath</p>
+                            <p class="text-zinc-400 font-mono text-[11px]">c/o IP-Management #44564<br>Ludwig-Erhard-Str. 18<br>20459 Hamburg<br>Germany</p>
+                        </section>
+                        <section class="space-y-2">
+                            <h4 class="font-bold text-white text-sm">Contact Details</h4>
+                            <p class="text-zinc-400">Email: <strong>hi@philwornath.de</strong></p>
+                        </section>
+                        <section class="space-y-2">
+                            <h4 class="font-bold text-white text-sm">Data & Privacy</h4>
+                            <p class="text-zinc-400">Personal data is processed only where necessary to operate the services, manage accounts, handle support, or comply with legal obligations. Requests regarding stored records can be sent by email.</p>
+                        </section>
+                    </div>
+                    <div class="space-y-6">
+                        <section class="space-y-2">
+                            <h4 class="font-bold text-white text-sm">Licensing</h4>
+                            <p class="text-zinc-400">Unless otherwise stated, site content remains subject to the applicable rights of the author and third-party owners. Referenced trademarks, names, and logos remain the property of their respective owners.</p>
+                        </section>
+                        <section class="space-y-2">
+                            <h4 class="font-bold text-white text-sm">Disclaimer</h4>
+                            <p class="text-zinc-400">Content is provided for informational purposes. No warranty is made that all information is complete, current, or suitable for every use case. Use of the tools and published content is at your own risk.</p>
+                        </section>
+                        <section class="space-y-2">
+                            <h4 class="font-bold text-white text-sm">External References</h4>
+                            <p class="text-zinc-400">Links to external services are provided for convenience and do not imply endorsement or control over their content or practices.</p>
+                        </section>
+                    </div>
+                </div>
             </section>
         </article>
     </main>
@@ -64,10 +176,10 @@
         <div class="flex flex-wrap justify-between gap-4 items-center">
             <span class="font-bold text-zinc-400">byphil.</span>
             <div class="flex flex-wrap gap-4 font-semibold text-zinc-400">
-                <a href="privacy.html" class="hover:text-white transition-colors">Privacy & GDPR</a>
-                <a href="terms.html" class="hover:text-white transition-colors">Terms of Service</a>
-                <a href="refunds.html" class="hover:text-white transition-colors">Refunds & Returns</a>
-                <a href="impressum.html" class="hover:text-white transition-colors">Impressum</a>
+                <a href="#privacy" class="hover:text-white transition-colors">Privacy & GDPR</a>
+                <a href="#terms-of-service" class="hover:text-white transition-colors">Terms of Service</a>
+                <a href="#refunds" class="hover:text-white transition-colors">Refunds & Returns</a>
+                <a href="#impressum" class="hover:text-white transition-colors">Impressum</a>
             </div>
         </div>
     </footer>
