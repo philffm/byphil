@@ -4,7 +4,7 @@ FROM nginx:alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copy static site files
-COPY index.html impressum.html privacy.html refunds.html terms.html /usr/share/nginx/html/
+COPY index.html terms.html /usr/share/nginx/html/
 COPY css/ /usr/share/nginx/html/css/
 
 EXPOSE 80
