@@ -85,79 +85,6 @@
             </div>
         </section>
 
-        <section id="account" class="bg-zinc-50 border border-zinc-200 rounded-2xl p-6 sm:p-10 space-y-8">
-            <div class="space-y-1">
-                <span class="text-xs font-mono tracking-widest text-zinc-500 uppercase font-bold">Unified Login</span>
-                <h3 class="text-2xl font-bold text-zinc-900">Your byphil Account</h3>
-                <p class="text-zinc-600 text-sm">Use one email login for all tools. New users are created automatically on first OTP request.</p>
-            </div>
-
-            <div id="authNotice" class="hidden rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"></div>
-            <div id="authError" class="hidden rounded-xl border border-rose-300 bg-rose-50 px-4 py-3 text-sm text-rose-800"></div>
-
-            <div id="authPanel" class="bg-white border border-zinc-200 rounded-2xl p-5 space-y-4">
-                <div class="flex items-center justify-between gap-3">
-                    <h4 id="authStepTitle" class="text-base font-bold text-zinc-900 flex items-center gap-2"><i data-lucide="at-sign" class="w-4 h-4 text-zinc-500"></i> Step 1: Request OTP</h4>
-                    <span id="authStepBadge" class="text-xs font-bold text-zinc-500 bg-zinc-100 rounded-full px-2.5 py-1">1 / 2</span>
-                </div>
-                <div class="space-y-2">
-                    <label class="block text-sm font-semibold text-zinc-700" for="authEmail">Email</label>
-                    <input id="authEmail" type="email" placeholder="you@example.com" class="w-full rounded-xl border border-zinc-300 px-3 py-2 text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-900 focus:outline-none" />
-                </div>
-                <div id="otpGroup" class="hidden space-y-2">
-                    <label class="block text-sm font-semibold text-zinc-700" for="otpCode">6-digit OTP code</label>
-                    <input id="otpCode" type="text" inputmode="numeric" maxlength="6" placeholder="123456" class="w-full rounded-xl border border-zinc-300 px-3 py-2 text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-900 focus:outline-none" />
-                    <p class="text-xs text-zinc-500">No password needed. Sign in and sign up share the same OTP flow.</p>
-                </div>
-                <div class="flex flex-wrap gap-2 pt-1">
-                    <button id="requestOtpBtn" type="button" class="rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-bold text-white hover:bg-zinc-800 transition-colors">Send OTP Code</button>
-                    <button id="verifyOtpBtn" type="button" class="hidden rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-bold text-white hover:bg-zinc-800 transition-colors">Verify and Sign in</button>
-                    <button id="changeEmailBtn" type="button" class="hidden rounded-xl border border-zinc-300 px-4 py-2.5 text-sm font-bold text-zinc-800 hover:bg-zinc-100 transition-colors">Use different email</button>
-                </div>
-            </div>
-
-            <div id="accountPanel" class="hidden bg-white border border-zinc-200 rounded-2xl p-6 space-y-5">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div>
-                        <h4 class="text-lg font-bold text-zinc-900">Account Overview</h4>
-                        <p id="accountEmail" class="text-sm text-zinc-600"></p>
-                    </div>
-                    <span id="accountTier" class="inline-flex items-center gap-1 rounded-full bg-zinc-100 px-3 py-1 text-xs font-bold uppercase text-zinc-700">Free</span>
-                </div>
-                <div class="grid sm:grid-cols-3 gap-4 text-sm">
-                    <div class="rounded-xl border border-zinc-200 bg-zinc-50 p-3">
-                        <p class="text-zinc-500">Member since</p>
-                        <p id="accountCreated" class="font-semibold text-zinc-900">-</p>
-                    </div>
-                    <div class="rounded-xl border border-zinc-200 bg-zinc-50 p-3">
-                        <p class="text-zinc-500">Apps with data</p>
-                        <p id="accountAppsCount" class="font-semibold text-zinc-900">0</p>
-                    </div>
-                    <div class="rounded-xl border border-zinc-200 bg-zinc-50 p-3">
-                        <p class="text-zinc-500">License linked</p>
-                        <p id="accountLicense" class="font-semibold text-zinc-900">No</p>
-                    </div>
-                </div>
-                <div id="licenseActions" class="hidden rounded-xl border border-zinc-200 bg-zinc-50 p-4 space-y-3">
-                    <p class="text-sm font-semibold text-zinc-900">Link your Support Pass license</p>
-                    <p class="text-xs text-zinc-500">No license linked yet. Paste a license key or Stripe subscription ID (sub_...) to unlock premium access.</p>
-                    <div class="flex flex-col sm:flex-row gap-2">
-                        <input id="licenseKeyInput" type="text" placeholder="Paste license key or sub_..." class="w-full rounded-xl border border-zinc-300 px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-900 focus:outline-none" />
-                        <button id="linkLicenseBtn" type="button" class="rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-bold text-white hover:bg-zinc-800 transition-colors">Link License</button>
-                    </div>
-                    <a href="https://buy.stripe.com/8x24gy3Lj9RkeAl9T5bEA02" target="_blank" class="inline-flex items-center gap-2 text-sm font-bold text-indigo-600 hover:text-indigo-700 transition-colors underline underline-offset-4">
-                        Buy Support Pass first <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                    </a>
-                </div>
-                <div class="flex flex-wrap gap-3">
-                    <button id="downloadDataBtn" type="button" class="rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-bold text-white hover:bg-zinc-800 transition-colors flex items-center gap-2"><i data-lucide="download" class="w-4 h-4"></i> Download all account data</button>
-                    <button id="refreshAccountBtn" type="button" class="rounded-xl border border-zinc-300 px-4 py-2.5 text-sm font-bold text-zinc-800 hover:bg-zinc-100 transition-colors flex items-center gap-2"><i data-lucide="refresh-cw" class="w-4 h-4"></i> Refresh details</button>
-                    <button id="signOutBtn" type="button" class="rounded-xl border border-zinc-300 px-4 py-2.5 text-sm font-bold text-zinc-800 hover:bg-zinc-100 transition-colors flex items-center gap-2"><i data-lucide="log-out" class="w-4 h-4"></i> Sign out</button>
-                    <button id="deleteAccountBtn" type="button" class="rounded-xl border border-rose-300 px-4 py-2.5 text-sm font-bold text-rose-700 hover:bg-rose-50 transition-colors flex items-center gap-2"><i data-lucide="trash-2" class="w-4 h-4"></i> Delete account</button>
-                </div>
-            </div>
-        </section>
-
         <section id="tools" class="space-y-8 pt-10 border-t border-zinc-100">
             <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
                 <div>
@@ -334,7 +261,7 @@
                             <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-600 flex-shrink-0"></i> 1 Pet profile</li>
                         </ul>
                     </div>
-                    <a href="https://philwornath.com/links" target="_blank" class="border border-zinc-300 hover:bg-zinc-50 text-zinc-800 font-bold py-3 rounded-xl text-center text-sm transition-all block">
+                    <a href="#account" class="border border-zinc-300 hover:bg-zinc-50 text-zinc-800 font-bold py-3 rounded-xl text-center text-sm transition-all block">
                         Get Started
                     </a>
                 </div>
@@ -378,6 +305,79 @@
                     </a>
                 </div>
 
+            </div>
+        </section>
+
+        <section id="account" class="bg-zinc-50 border border-zinc-200 rounded-2xl p-6 sm:p-10 space-y-8">
+            <div class="space-y-1">
+                <span class="text-xs font-mono tracking-widest text-zinc-500 uppercase font-bold">Unified Login</span>
+                <h3 class="text-2xl font-bold text-zinc-900">Your byphil Account</h3>
+                <p class="text-zinc-600 text-sm">Use one email login for all tools. New users are created automatically on first OTP request.</p>
+            </div>
+
+            <div id="authNotice" class="hidden rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"></div>
+            <div id="authError" class="hidden rounded-xl border border-rose-300 bg-rose-50 px-4 py-3 text-sm text-rose-800"></div>
+
+            <div id="authPanel" class="bg-white border border-zinc-200 rounded-2xl p-5 space-y-4">
+                <div class="flex items-center justify-between gap-3">
+                    <h4 id="authStepTitle" class="text-base font-bold text-zinc-900 flex items-center gap-2"><i data-lucide="at-sign" class="w-4 h-4 text-zinc-500"></i> Step 1: Request OTP</h4>
+                    <span id="authStepBadge" class="text-xs font-bold text-zinc-500 bg-zinc-100 rounded-full px-2.5 py-1">1 / 2</span>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-zinc-700" for="authEmail">Email</label>
+                    <input id="authEmail" type="email" placeholder="you@example.com" class="w-full rounded-xl border border-zinc-300 px-3 py-2 text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-900 focus:outline-none" />
+                </div>
+                <div id="otpGroup" class="hidden space-y-2">
+                    <label class="block text-sm font-semibold text-zinc-700" for="otpCode">6-digit OTP code</label>
+                    <input id="otpCode" type="text" inputmode="numeric" maxlength="6" placeholder="123456" class="w-full rounded-xl border border-zinc-300 px-3 py-2 text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-900 focus:outline-none" />
+                    <p class="text-xs text-zinc-500">No password needed. Sign in and sign up share the same OTP flow.</p>
+                </div>
+                <div class="flex flex-wrap gap-2 pt-1">
+                    <button id="requestOtpBtn" type="button" class="rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-bold text-white hover:bg-zinc-800 transition-colors">Send OTP Code</button>
+                    <button id="verifyOtpBtn" type="button" class="hidden rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-bold text-white hover:bg-zinc-800 transition-colors">Verify and Sign in</button>
+                    <button id="changeEmailBtn" type="button" class="hidden rounded-xl border border-zinc-300 px-4 py-2.5 text-sm font-bold text-zinc-800 hover:bg-zinc-100 transition-colors">Use different email</button>
+                </div>
+            </div>
+
+            <div id="accountPanel" class="hidden bg-white border border-zinc-200 rounded-2xl p-6 space-y-5">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <h4 class="text-lg font-bold text-zinc-900">Account Overview</h4>
+                        <p id="accountEmail" class="text-sm text-zinc-600"></p>
+                    </div>
+                    <span id="accountTier" class="inline-flex items-center gap-1 rounded-full bg-zinc-100 px-3 py-1 text-xs font-bold uppercase text-zinc-700">Free</span>
+                </div>
+                <div class="grid sm:grid-cols-3 gap-4 text-sm">
+                    <div class="rounded-xl border border-zinc-200 bg-zinc-50 p-3">
+                        <p class="text-zinc-500">Member since</p>
+                        <p id="accountCreated" class="font-semibold text-zinc-900">-</p>
+                    </div>
+                    <div class="rounded-xl border border-zinc-200 bg-zinc-50 p-3">
+                        <p class="text-zinc-500">Apps with data</p>
+                        <p id="accountAppsCount" class="font-semibold text-zinc-900">0</p>
+                    </div>
+                    <div class="rounded-xl border border-zinc-200 bg-zinc-50 p-3">
+                        <p class="text-zinc-500">License linked</p>
+                        <p id="accountLicense" class="font-semibold text-zinc-900">No</p>
+                    </div>
+                </div>
+                <div id="licenseActions" class="hidden rounded-xl border border-zinc-200 bg-zinc-50 p-4 space-y-3">
+                    <p class="text-sm font-semibold text-zinc-900">Link your Support Pass license</p>
+                    <p class="text-xs text-zinc-500">No license linked yet. Paste a license key or Stripe subscription ID (sub_...) to unlock premium access.</p>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <input id="licenseKeyInput" type="text" placeholder="Paste license key or sub_..." class="w-full rounded-xl border border-zinc-300 px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-900 focus:outline-none" />
+                        <button id="linkLicenseBtn" type="button" class="rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-bold text-white hover:bg-zinc-800 transition-colors">Link License</button>
+                    </div>
+                    <a href="https://buy.stripe.com/8x24gy3Lj9RkeAl9T5bEA02" target="_blank" class="inline-flex items-center gap-2 text-sm font-bold text-indigo-600 hover:text-indigo-700 transition-colors underline underline-offset-4">
+                        Buy Support Pass first <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                </div>
+                <div class="flex flex-wrap gap-3">
+                    <button id="downloadDataBtn" type="button" class="rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-bold text-white hover:bg-zinc-800 transition-colors flex items-center gap-2"><i data-lucide="download" class="w-4 h-4"></i> Download all account data</button>
+                    <button id="refreshAccountBtn" type="button" class="rounded-xl border border-zinc-300 px-4 py-2.5 text-sm font-bold text-zinc-800 hover:bg-zinc-100 transition-colors flex items-center gap-2"><i data-lucide="refresh-cw" class="w-4 h-4"></i> Refresh details</button>
+                    <button id="signOutBtn" type="button" class="rounded-xl border border-zinc-300 px-4 py-2.5 text-sm font-bold text-zinc-800 hover:bg-zinc-100 transition-colors flex items-center gap-2"><i data-lucide="log-out" class="w-4 h-4"></i> Sign out</button>
+                    <button id="deleteAccountBtn" type="button" class="rounded-xl border border-rose-300 px-4 py-2.5 text-sm font-bold text-rose-700 hover:bg-rose-50 transition-colors flex items-center gap-2"><i data-lucide="trash-2" class="w-4 h-4"></i> Delete account</button>
+                </div>
             </div>
         </section>
 
