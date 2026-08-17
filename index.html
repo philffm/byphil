@@ -913,20 +913,20 @@
         <!-- Stage 1: email -->
         <div class="account-stage" id="stageEmail">
           <label for="acctEmail" class="acct-label">Email address</label>
-          <div class="acct-row">
-            <input type="email" id="acctEmail" class="acct-input" placeholder="you@example.com" autocomplete="email">
-            <button type="button" class="btn-primary" id="btnRequestOtp" onclick="requestOtp()">Send code</button>
-          </div>
+          <form class="acct-row" onsubmit="handleSendCode(event)" novalidate>
+            <input type="email" id="acctEmail" class="acct-input" placeholder="you@example.com" autocomplete="email" required>
+            <button type="submit" class="btn-primary" id="btnRequestOtp">Send code</button>
+          </form>
           <p class="acct-hint" id="acctMsgEmail" aria-live="polite"></p>
         </div>
 
         <!-- Stage 2: code -->
         <div class="account-stage" id="stageCode" style="display:none;">
           <label for="acctCode" class="acct-label">6-digit code — sent to <span id="acctEmailEcho"></span></label>
-          <div class="acct-row">
-            <input type="text" id="acctCode" class="acct-input mono" placeholder="000000" maxlength="6" inputmode="numeric" autocomplete="one-time-code">
-            <button type="button" class="btn-primary" id="btnVerifyOtp" onclick="verifyOtp()">Verify</button>
-          </div>
+          <form class="acct-row" onsubmit="handleVerifyOtp(event)" novalidate>
+            <input type="text" id="acctCode" class="acct-input mono" placeholder="000000" maxlength="6" inputmode="numeric" autocomplete="one-time-code" required>
+            <button type="submit" class="btn-primary" id="btnVerifyOtp">Verify</button>
+          </form>
           <p class="acct-hint" id="acctMsgCode" aria-live="polite"></p>
           <button type="button" class="acct-link-btn" onclick="resetToEmailStage()">Use a different email</button>
         </div>
@@ -1053,7 +1053,7 @@
         <a href="https://github.com/philffm/ai-summary-helper/" target="_blank" rel="noopener">Source on GitHub</a>
       </div>
     </div>
-    <div class="copyright">© 2026 Phil Wornath. Independent software built in Germany with a European digital sovereignty focus. Payments handled by Paddle as Merchant of Record.<br>
+    <div class="copyright">© 2026 Phil Wornath. Independent software built in Germany with a European digital sovereignty focus. Payments handled by Stripe as Merchant of Record.<br>
       <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener">EU Consumer Dispute Resolution</a> · Designed &amp; built by <a href="https://philwornath.com/" target="_blank" rel="noopener" class="credit-link">philwornath.com ↗</a>
     </div>
   </div>
@@ -1308,6 +1308,19 @@
     showHint(document.getElementById('acctMsgCode'), '');
     document.getElementById('stageCode').style.display = 'none';
     document.getElementById('stageEmail').style.display = 'block';
+  }
+
+  /* Submit handlers for the email + OTP forms. They prevent the default
+     page reload and route straight into the existing request/verify logic,
+     so pressing Enter (desktop) or "Go/Submit" (mobile keyboard) works. */
+  function handleSendCode(e){
+    e.preventDefault();
+    requestOtp();
+  }
+
+  function handleVerifyOtp(e){
+    e.preventDefault();
+    verifyOtp();
   }
 
   async function apiRequest(path, options = {}){
