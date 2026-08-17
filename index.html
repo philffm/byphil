@@ -608,6 +608,18 @@
   }
   .acct-signed-in{display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;}
   .acct-email{font-family:var(--font-mono); font-size:14px; color:var(--paper);}
+  .account-overview{display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin:24px 0;}
+  .account-stat{padding:13px; border-radius:10px; border:1px solid rgba(255,255,255,0.08); background:rgba(0,0,0,0.14);}
+  .account-stat span{display:block; font-size:10px; color:var(--paper-dim); text-transform:uppercase; letter-spacing:0.07em; margin-bottom:6px;}
+  .account-stat strong{font-size:13px; color:var(--paper); font-weight:600;}
+  .account-license{padding:16px; border-radius:12px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.025); margin-bottom:16px;}
+  .account-license h3{font-size:14px; margin:0 0 6px; font-family:var(--font-display);}
+  .account-license p{font-size:12px; line-height:1.5; color:var(--paper-dim); margin:0 0 12px;}
+  .account-license .acct-row{align-items:center;}
+  .account-actions{display:flex; gap:9px; flex-wrap:wrap;}
+  .account-actions .btn-secondary{min-height:40px; padding:10px 13px; font-size:12px;}
+  .btn-danger{color:#FF98C8; border-color:rgba(255,79,163,0.35);}
+  .btn-danger:hover{background:rgba(255,79,163,0.12);}
 
   /* ── Footer ──────────────────────────────────────────────────────── */
   footer{
@@ -785,6 +797,25 @@
               <div class="acct-email" id="acctSignedEmail">—</div>
             </div>
             <button type="button" class="btn-secondary" onclick="signOut()">Sign out</button>
+          </div>
+          <div class="account-overview" aria-label="Account overview">
+            <div class="account-stat"><span>Membership</span><strong id="accountTier">Free</strong></div>
+            <div class="account-stat"><span>Member since</span><strong id="accountCreated">—</strong></div>
+            <div class="account-stat"><span>Apps with data</span><strong id="accountAppsCount">0</strong></div>
+          </div>
+          <div class="account-license" id="licenseActions">
+            <h3>Link your Support Pass</h3>
+            <p id="accountLicense">No license linked. Enter a license key or Stripe subscription ID to unlock premium access.</p>
+            <div class="acct-row">
+              <input type="text" id="licenseKeyInput" class="acct-input" placeholder="License key or sub_…" autocomplete="off">
+              <button type="button" class="btn-primary" onclick="linkLicense()">Link license</button>
+            </div>
+          </div>
+          <p class="acct-hint" id="acctMsgAccount" aria-live="polite"></p>
+          <div class="account-actions">
+            <button type="button" class="btn-secondary" onclick="refreshAccount()">Refresh details</button>
+            <button type="button" class="btn-secondary" onclick="downloadAccountData()">Download my data</button>
+            <button type="button" class="btn-secondary btn-danger" onclick="deleteAccount()">Delete account</button>
           </div>
         </div>
       </div>
@@ -1075,6 +1106,11 @@
     if (record && record.email) {
       document.getElementById('stageIn').style.display = 'block';
       document.getElementById('acctSignedEmail').textContent = record.email;
+      document.getElementById('accountTier').textContent = String(record.subscription_status || 'free').toUpperCase();
+      document.getElementById('accountCreated').textContent = formatDate(record.created);
+      const appData = record.app_data && typeof record.app_data === 'object' ? record.app_data : {};
+      document.getElementById('accountAppsCount').textContent = String(Object.keys(appData).length);
+      document.getElementById('licenseActions').style.display = record.license_key ? 'none' : 'block';
       if (navBtn) navBtn.textContent = 'My account';
     } else {
       document.getElementById('stageEmail').style.display = 'block';
@@ -1117,6 +1153,91 @@
       renderAuthState(data.record);
     } catch (err) {
       renderAuthState(null);
+    }
+  }
+
+  function formatDate(isoDate){
+    if (!isoDate) return '—';
+    const parsed = new Date(isoDate);
+    return Number.isNaN(parsed.getTime()) ? '—' : parsed.toLocaleDateString();
+  }
+
+  function showAccountHint(message, kind){
+    showHint(document.getElementById('acctMsgAccount'), message, kind);
+  }
+
+  async function refreshAccount(){
+    showAccountHint('');
+    await loadAccountFromToken();
+    if (document.getElementById('stageIn').style.display === 'block') {
+      showAccountHint('Account details updated.', 'ok');
+    }
+  }
+
+  async function linkLicense(){
+    const input = document.getElementById('licenseKeyInput');
+    const licenseKey = input.value.trim();
+    if (!licenseKey) {
+      showAccountHint('Enter a license key or subscription ID.', 'error');
+      input.focus();
+      return;
+    }
+    try {
+      const res = await apiRequest('/auth/link-license', {
+        method: 'POST',
+        body: JSON.stringify({ project_id: 'ai_summary_helper', license_key: licenseKey })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data?.success) throw new Error(data?.error || 'Could not link your license.');
+      input.value = '';
+      await loadAccountFromToken();
+      showAccountHint('License linked successfully.', 'ok');
+    } catch (err) {
+      showAccountHint(err.message || 'Could not link your license.', 'error');
+    }
+  }
+
+  async function downloadAccountData(){
+    showAccountHint('');
+    try {
+      const res = await apiRequest('/auth/export-data', { method: 'GET' });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data?.error || 'Could not export account data.');
+      }
+      const blob = await res.blob();
+      const filename = res.headers.get('content-disposition')?.match(/filename="([^"]+)"/)?.[1] || 'byphil-account-export.json';
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+      showAccountHint('Account export downloaded.', 'ok');
+    } catch (err) {
+      showAccountHint(err.message || 'Could not download account data.', 'error');
+    }
+  }
+
+  async function deleteAccount(){
+    if (!window.confirm('Delete your account and related data permanently? This cannot be undone.')) return;
+    if (window.prompt('Type DELETE to confirm account deletion.') !== 'DELETE') {
+      showAccountHint('Account deletion cancelled.', 'error');
+      return;
+    }
+    try {
+      const res = await apiRequest('/auth/delete-account', {
+        method: 'POST',
+        body: JSON.stringify({ confirmation: 'DELETE' })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data?.success) throw new Error(data?.error || 'Could not delete account.');
+      signOut();
+      showHint(document.getElementById('acctMsgEmail'), 'Account deleted successfully.', 'ok');
+    } catch (err) {
+      showAccountHint(err.message || 'Could not delete account.', 'error');
     }
   }
 
