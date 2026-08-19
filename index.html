@@ -1021,7 +1021,7 @@
                 <li>Unlimited pet passes</li>
                 <li>Kindle delivery included</li>
               </ul>
-              <a href="#" class="tier-cta">Join</a>
+              <a href="https://buy.stripe.com/8x24gy3Lj9RkeAl9T5bEA02" class="tier-cta" id="ctaSupportPass" target="_blank" rel="noopener">Join</a>
             </div>
 
             <div class="tier-card">
@@ -1032,7 +1032,7 @@
                 <li>Everything in Support Pass</li>
                 <li>Direct support for future tools</li>
               </ul>
-              <a href="#" class="tier-cta">Donate &amp; unlock</a>
+              <a href="https://buy.stripe.com/dRmbJ0bdLfbEbo95CPbEA04" class="tier-cta" target="_blank" rel="noopener">Donate &amp; unlock</a>
             </div>
           </div>
         </div>
@@ -1252,18 +1252,26 @@
     }
   });
 
+  const STRIPE_LINKS = {
+    monthly: 'https://buy.stripe.com/8x24gy3Lj9RkeAl9T5bEA02',
+    yearly: 'https://buy.stripe.com/7sY3cu4Pnd3wak5d5hbEA03'
+  };
+
   function setBilling(period){
     const grid = document.getElementById('tiersGrid');
     const bm = document.getElementById('btnMonthly');
     const by = document.getElementById('btnYearly');
+    const supportPassCta = document.getElementById('ctaSupportPass');
     if (period === 'yearly') {
       grid.classList.add('yearly');
       by.classList.add('active');
       bm.classList.remove('active');
+      if (supportPassCta) supportPassCta.href = STRIPE_LINKS.yearly;
     } else {
       grid.classList.remove('yearly');
       bm.classList.add('active');
       by.classList.remove('active');
+      if (supportPassCta) supportPassCta.href = STRIPE_LINKS.monthly;
     }
   }
 
