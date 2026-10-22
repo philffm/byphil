@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="{{lang}}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#F6F5F1">
+<title>{{t:meta.title}}</title>
+<meta name="description" content="{{a:meta.description}}">
+{{seo}}
+<script>
+  /* Set theme before first paint to avoid a flash of the wrong mode.
+     Priority: saved choice > OS preference > light (site default). */
+  (function(){
+    try {
+      var saved = localStorage.getItem('byphil_theme');
+      var theme = saved === 'light' || saved === 'dark'
+        ? saved
+        : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    } catch (e) {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink-950:#08090C;
+    --ink-900:#0C0D11;
+    --ink-800:#141519;
+    --ink-700:#1D1E24;
+    --steel-600:#3A3A42;
+    --steel-400:#6E6E78;
+    --paper:#F5F5F7;
+    --paper-dim:#A9A9B3;
+    --cyan:#2DD4EE;
+    --cyan-light:#7FE8F7;
+    --pink:#FF4FA3;
+    --pink-light:#FF8FC9;
+    --violet:#A98AE8;
+    /* On-brand with philwornath.com: cyan + pink duo on near-black */
+    --accent: var(--cyan);
+    --accent-2: var(--pink);
+    /* internal aliases so every existing component (buttons, focus rings,
+       card details) picks up the new brand automatically */
+    --signal: var(--accent);
+    --signal-light: var(--cyan-light);
+    --brass: var(--accent-2);
+    --brass-light: var(--pink-light);
+    --font-display:'Space Grotesk', sans-serif;
+    --font-body:'Inter', sans-serif;
+    --font-mono:'JetBrains Mono', monospace;
+
+    /* "Glass" surface tokens — the translucent panels, borders and inputs
+       that were originally hand-tuned as literal rgba(255,255,255,x) for a
+       dark backdrop. Kept as variables so light mode can flip them to a
+       dark-on-paper glass instead of losing all definition. */
+    --surface-1: rgba(255,255,255,0.05);
+    --surface-1-strong: rgba(255,255,255,0.08);
+    --surface-2: rgba(255,255,255,0.025);
+    --border-subtle: rgba(255,255,255,0.07);
+    --border-medium: rgba(255,255,255,0.13);
+    --border-strong: rgba(255,255,255,0.2);
+    --input-bg: rgba(0,0,0,0.25);
+    --card-shadow: rgba(0,0,0,0.6);
+    --sheen-strong: rgba(255,255,255,0.35);
+    --sheen-soft: rgba(255,255,255,0.14);
+
+    /* Filled surfaces (buttons, badges) always carry dark navy text on top,
+       so these stay bright in both themes rather than following --signal/
+       --brass, which get darkened for light-mode text-on-page contrast. */
+    --cta-cyan-1: var(--cyan-light);
+    --cta-cyan-2: var(--cyan);
+    --cta-pink-1: var(--pink-light);
+    --cta-pink-2: var(--pink);
+  }
+
+  /* ── Light theme ─────────────────────────────────────────────────────
+     Same brand tokens, re-pointed at a warm paper background instead of
+     near-black. Almost everything in this file already reads color from
+     these variables, so most components adapt automatically; the handful
+     of hardcoded white-on-dark "glass" surfaces get explicit overrides
+     further down, grouped under the same [data-theme="light"] selector. */
+  :root[data-theme="light"]{
+    --ink-950:#F6F5F1;
+    --ink-900:#FBFAF7;
+    --ink-800:#FFFFFF;
+    --ink-700:#EDECE6;
+    --steel-600:#C7C6C0;
+    --steel-400:#83838C;
+    --paper:#15161B;
+    --paper-dim:#54545D;
+    --signal:#066276;
+    --signal-light:#0884A0;
+    --brass:#A81756;
+    --brass-light:#C81F63;
+
+    --surface-1: rgba(20,21,26,0.035);
+    --surface-1-strong: rgba(20,21,26,0.06);
+    --surface-2: rgba(20,21,26,0.02);
+    --border-subtle: rgba(20,21,26,0.08);
+    --border-medium: rgba(20,21,26,0.14);
+    --border-strong: rgba(20,21,26,0.24);
+    --input-bg: #FFFFFF;
+    --card-shadow: rgba(20,21,26,0.14);
+    --sheen-strong: rgba(255,255,255,0.7);
+    --sheen-soft: rgba(255,255,255,0.55);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--ink-950);
+    color:var(--paper);
+    font-family:var(--font-body);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    -webkit-tap-highlight-color:transparent;
+    transition:background-color 0.25s ease, color 0.25s ease;
+  }
+  @media (prefers-reduced-motion: reduce){
+    body{transition:none;}}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}}
+
+  .skip-link{
+    position:absolute; top:-100px; left:16px; z-index:100;
+    background:var(--cta-cyan-2); color:#08101F;
+    padding:12px 18px; border-radius:10px;
+    font-weight:600; font-size:14px;
+    transition:top 0.2s ease;
+  }
+  .skip-link:focus{top:16px;}
+
+  /* Scroll-reveal: hidden by default, JS flips .is-visible on intersect.
+     No-JS / reduced-motion fallback keeps content fully visible. */
+  .reveal{opacity:0; transform:translateY(18px); transition:opacity 0.6s ease, transform 0.6s ease;}
+  .reveal.is-visible{opacity:1; transform:translateY(0);}
+  @media (prefers-reduced-motion: reduce){
+    .reveal{opacity:1; transform:none; transition:none;}}
+  html.no-js .reveal{opacity:1; transform:none;}
+
+  a{color:inherit;text-decoration:none;}
+  img,svg{display:block;}
+  :root[data-theme="light"]{
+    --glow-cyan: rgba(8,145,168,0.10);
+    --glow-pink: rgba(214,38,110,0.08);
+    --grain-dot: rgba(20,21,26,0.05);
+  }
+
+  :focus-visible{
+    outline:2px solid var(--signal-light);
+    outline-offset:3px;
+    border-radius:4px;
+  }
+
+  .wrap{
+    max-width:1120px; margin:0 auto;
+    padding-left:max(28px, env(safe-area-inset-left));
+    padding-right:max(28px, env(safe-area-inset-right));
+  }
+  :root[data-theme="light"]{
+    --nav-bg: rgba(246,245,241,0.82);
+    --border-subtle: rgba(20,21,26,0.08);
+  }
+
+  .theme-toggle{
+    width:44px; height:44px;
+    display:inline-flex; align-items:center; justify-content:center;
+    background:var(--surface-1, rgba(255,255,255,0.06));
+    border:1px solid var(--border-medium, rgba(255,255,255,0.12));
+    border-radius:10px;
+    color:var(--paper);
+    cursor:pointer;
+    transition:background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+    flex-shrink:0;
+  }
+  .theme-toggle:hover{background:var(--surface-1-strong, rgba(255,255,255,0.1));}
+  .theme-toggle:active{transform:scale(0.92);}
+  .theme-toggle svg{width:19px; height:19px;}
+  .theme-toggle .icon-sun{display:none;}
+  :root[data-theme="light"] .theme-toggle .icon-moon{display:none;}
+  :root[data-theme="light"] .theme-toggle .icon-sun{display:block;}
+  .theme-toggle-mobile{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 4px; width:100%; background:none; border:none;
+    font-family:var(--font-body); font-size:16px; font-weight:500; color:var(--paper);
+    cursor:pointer;
+  }
+  .theme-toggle-mobile svg{width:19px; height:19px;}
+  .theme-toggle-mobile .icon-sun{display:none;}
+  :root[data-theme="light"] .theme-toggle-mobile .icon-moon{display:none;}
+  :root[data-theme="light"] .theme-toggle-mobile .icon-sun{display:block;}
+  :root[data-theme="light"]{ --nav-bg-solid: rgba(246,245,241,0.97); }
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--brass-light);
+    display:inline-flex; align-items:center; gap:8px;
+    margin-bottom:22px;
+  }
+  .eyebrow .dash{width:16px; height:1px; background:var(--brass); display:inline-block;}
+  .btn-primary{
+    font-size:14.5px; font-weight:600;
+    padding:14px 24px;
+    min-height:48px;
+    display:inline-flex; align-items:center; justify-content:center;
+    border-radius:12px;
+    background:linear-gradient(180deg, var(--cta-cyan-1), var(--cta-cyan-2));
+    color:#08101F;
+    box-shadow:0 10px 24px -8px rgba(45,212,238,0.5), inset 0 1px 0 rgba(255,255,255,0.35);
+    transition:transform 0.15s ease, box-shadow 0.2s ease;
+    border:none; cursor:pointer;
+  }
+  .btn-primary:hover{transform:translateY(-1px); box-shadow:0 14px 30px -8px rgba(45,212,238,0.6), inset 0 1px 0 rgba(255,255,255,0.35);}
+  .btn-primary:active{transform:scale(0.97);}
+  .btn-primary:disabled{opacity:0.6; cursor:default; transform:none;}
+  .btn-secondary{
+    font-size:14.5px; font-weight:600;
+    padding:14px 24px;
+    min-height:48px;
+    display:inline-flex; align-items:center; justify-content:center;
+    border-radius:12px;
+    color:var(--paper);
+    border:1px solid var(--border-medium);
+    background:var(--surface-2);
+    transition:background 0.2s ease, transform 0.15s ease;
+    cursor:pointer;
+  }
+  .btn-secondary:hover{background:var(--surface-1-strong);}
+  .btn-secondary:active{transform:scale(0.97);}
+
+  /* ── Section shell ───────────────────────────────────────────────── */
+  section{padding:78px 0;}
+  .section-head{margin-bottom:44px;}
+  .section-head .eyebrow{margin-bottom:12px;}
+  .section-head h2{
+    font-family:var(--font-display);
+    font-size:clamp(26px, 3.4vw, 36px);
+    font-weight:600;
+    letter-spacing:-0.015em;
+    margin:0 0 10px;
+  }
+  .section-head p{color:var(--paper-dim); font-size:16.5px; line-height:1.6; max-width:480px; margin:0;}
+  :root[data-theme="light"]{
+    --glow-cyan-strong: rgba(8,145,168,0.13);
+    --glow-pink-strong: rgba(214,38,110,0.10);
+    --screen-bg-1: #FFFFFF;
+    --screen-bg-2: #F1F0EB;
+    --sheen-faint: rgba(20,21,26,0.05);
+    --card-bg-1: #FFFFFF;
+    --card-bg-2: #F1F0EB;
+  }
+
+  #account .section-head,
+  #account .account-box{margin-left:auto; margin-right:auto;}
+  #account .section-head{text-align:center;}
+  #account .section-head p{margin-left:auto; margin-right:auto;}
+
+  @media (max-width: 460px){
+    .acct-row{flex-direction:column;}
+    .acct-row .btn-primary{width:100%;}
+    section{padding:56px 0;}
+    .account-box{padding:22px 18px 20px;}}
+
+  @keyframes shake{
+    10%,90%{transform:translateX(-1px);}
+    20%,80%{transform:translateX(2px);}
+    30%,50%,70%{transform:translateX(-4px);}
+    40%,60%{transform:translateX(4px);}
+  }
+  .acct-input.input-error{border-color:#F87171; animation:shake 0.4s ease;}
+  :root[data-theme="light"] .acct-input.input-error{border-color:#DC2626;}
+  @media (prefers-reduced-motion: reduce){
+    .acct-input.input-error{animation:none;}}
+  :root[data-theme="light"]{ --best-tint: rgba(214,38,110,0.07); }
+
+  /* ── Account / OTP login ─────────────────────────────────────────── */
+  .account-box{
+    max-width:480px;
+    background:linear-gradient(180deg, var(--surface-1), var(--surface-2));
+    border:1px solid var(--border-subtle);
+    border-radius:18px;
+    padding:28px 26px 24px;
+  }
+  .acct-label{font-size:14.5px; font-weight:600; color:var(--paper-dim); margin-bottom:12px; display:block;}
+  .acct-label span{color:var(--paper); font-weight:600;}
+  .acct-row{display:flex; gap:10px;}
+  .acct-input{
+    flex:1;
+    width:100%;
+    font-family:var(--font-body);
+    font-size:16px; /* 16px stops iOS Safari auto-zoom on focus */
+    padding:15px 16px;
+    min-height:52px;
+    border-radius:12px;
+    border:1.5px solid var(--border-medium);
+    background:var(--input-bg);
+    color:var(--paper);
+    transition:border-color 0.2s ease;
+  }
+  .acct-input.mono{font-family:var(--font-mono); letter-spacing:0.3em; text-align:center; font-size:18px;}
+  .acct-input:focus{border-color:var(--signal-light);}
+  .acct-input::placeholder{color:var(--steel-400);}
+  .acct-row .btn-primary{white-space:nowrap;}
+  .acct-hint{font-size:14px; color:var(--paper-dim); min-height:18px; margin:14px 0 0; line-height:1.5;}
+  .acct-hint.error{color:#F87171;}
+  .acct-hint.ok{color:#4ADE80;}
+  :root[data-theme="light"] .acct-hint.error{color:#C0231E;}
+  :root[data-theme="light"] .acct-hint.ok{color:#15803D;}
+  .acct-link-btn{
+    background:none; border:none; padding:10px 0; margin-top:6px;
+    font-size:14px; color:var(--signal-light); font-family:var(--font-body);
+    cursor:pointer; text-decoration:underline; text-underline-offset:3px;
+  }
+  .acct-signed-in{display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;}
+  .acct-email{font-family:var(--font-mono); font-size:15px; color:var(--paper);}
+  .account-overview{display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin:24px 0;}
+  .account-stat{padding:13px; border-radius:10px; border:1px solid var(--border-subtle); background:var(--surface-2-strong, rgba(0,0,0,0.14));}
+  .account-stat span{display:block; font-size:10.5px; color:var(--paper-dim); text-transform:uppercase; letter-spacing:0.07em; margin-bottom:6px;}
+  .account-stat strong{font-size:14px; color:var(--paper); font-weight:600;}
+  .account-license{padding:16px; border-radius:12px; border:1px solid var(--border-subtle); background:var(--surface-2); margin-bottom:16px;}
+  .account-license h3{font-size:15px; margin:0 0 6px; font-family:var(--font-display);}
+  .account-license p{font-size:13px; line-height:1.55; color:var(--paper-dim); margin:0 0 12px;}
+  .account-license .acct-row{align-items:center;}
+  .account-actions{display:flex; gap:9px; flex-wrap:wrap;}
+  .account-actions .btn-secondary{min-height:40px; padding:10px 13px; font-size:13px;}
+  .btn-danger{color:#FF98C8; border-color:rgba(255,79,163,0.35);}
+  .btn-danger:hover{background:var(--danger-tint, rgba(255,79,163,0.12));}
+  :root[data-theme="light"] .btn-danger{color:#C0245E; border-color:rgba(214,38,110,0.35);}
+  :root[data-theme="light"]{ --surface-2-strong: rgba(20,21,26,0.04); --danger-tint: rgba(214,38,110,0.08); }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     Editorial workshop layout (Oct 2026): masthead, hero with note,
+     ticker, app index, ticket-style pass, giant footer wordmark.
+     ═══════════════════════════════════════════════════════════════════ */
+  :root{
+    --font-serif:'Instrument Serif', Georgia, 'Times New Roman', serif;
+    --gutter:clamp(20px, 5.5vw, 80px);
+    --hl:#2DD4EE; --hl-ink:#08101F;
+    --inv-bg:#101116; --inv-fg:#F6F5F1; --inv-card:#171820; --inv-line:rgba(246,245,241,0.16);
+    --paper-note:#FFFFFF; --note-ink:#15161B;
+  }
+  :root[data-theme="light"]{ --inv-bg:#15161B; --inv-card:#1D1E24; }
+  section[id]{scroll-margin-top:96px;}
+
+  /* Masthead */
+  header.mast{
+    position:sticky; top:0; z-index:50;
+    background:var(--ink-950);
+    border-bottom:1px solid var(--border-medium);
+  }
+  @supports (background: color-mix(in srgb, red 50%, transparent)){
+    header.mast{
+      background:color-mix(in srgb, var(--ink-950) 88%, transparent);
+      backdrop-filter:blur(14px) saturate(140%);
+      -webkit-backdrop-filter:blur(14px) saturate(140%);
+    }
+  }
+  .mast-inner{
+    max-width:1280px; margin:0 auto; height:76px;
+    padding:0 var(--gutter);
+    display:flex; align-items:center; justify-content:space-between; gap:24px;
+  }
+  .wordmark{
+    font-family:var(--font-display); font-weight:700;
+    font-size:32px; line-height:1; letter-spacing:-0.045em;
+  }
+  .wordmark .dot{color:var(--brass-light);}
+  .mast-meta{
+    font-family:var(--font-mono); font-size:11px; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--paper-dim); white-space:nowrap;
+  }
+  .mast-right{display:flex; align-items:center; gap:26px;}
+  nav.links{display:flex; gap:26px;}
+  nav.links a{font-size:14px; font-weight:500; padding:10px 0;}
+  nav.links a:hover{color:var(--brass-light);}
+  .lang{display:flex; align-items:center; gap:6px; font-family:var(--font-mono); font-size:12px; color:var(--paper-dim);}
+  .lang a{padding:4px 2px; border-bottom:1.5px solid transparent;}
+  .lang a:hover{color:var(--paper);}
+  .lang a[aria-current="true"]{color:var(--paper); border-bottom-color:var(--brass-light);}
+  header.mast .theme-toggle{width:40px; height:40px; border-radius:999px; background:none;}
+  .btn-pill{
+    display:inline-flex; align-items:center; min-height:44px; padding:0 22px;
+    border-radius:999px; background:var(--paper); color:var(--ink-950);
+    font-size:14px; font-weight:600; white-space:nowrap;
+    transition:transform 0.15s ease, opacity 0.2s ease;
+  }
+  .btn-pill:hover{opacity:0.88;}
+  .btn-pill:active{transform:scale(0.97);}
+  .nav-toggle{
+    display:none; width:44px; height:44px; border-radius:999px;
+    align-items:center; justify-content:center; cursor:pointer;
+    border:1px solid var(--border-medium); background:none; color:var(--paper);
+  }
+  .nav-toggle svg{width:20px; height:20px;}
+  .mobile-menu{
+    position:absolute; left:0; right:0; top:100%;
+    background:var(--ink-950); border-bottom:1px solid var(--border-medium);
+  }
+  .mobile-menu[hidden]{display:none;}
+  .mobile-menu-inner{display:flex; flex-direction:column; padding:8px var(--gutter) 24px; max-width:1280px; margin:0 auto;}
+  .mobile-menu-inner > a, .mobile-menu-inner .theme-toggle-mobile{
+    font-size:18px; font-weight:500; color:var(--paper);
+    padding:15px 0; border-bottom:1px solid var(--border-subtle);
+  }
+  .mobile-lang{display:flex; gap:20px; padding:15px 0; border-bottom:1px solid var(--border-subtle); font-size:18px; font-weight:500;}
+  .mobile-lang a{color:var(--paper-dim);}
+  .mobile-lang a[aria-current="true"]{color:var(--paper); text-decoration:underline; text-decoration-color:var(--brass-light); text-underline-offset:6px;}
+  .mobile-menu-inner a.mobile-cta{
+    justify-content:center; display:flex; margin-top:18px; border:none; border-radius:999px;
+    background:var(--paper); color:var(--ink-950); font-weight:600;
+  }
+  @media (max-width: 1080px){ .mast-meta{display:none;} }
+  @media (max-width: 820px){
+    .mast-right{display:none;}
+    .nav-toggle{display:inline-flex;}
+    .mast-inner{height:68px;}
+  }
+
+  /* Hero */
+  section.hero{
+    max-width:1280px; margin:0 auto; padding:72px var(--gutter) 88px;
+    display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,0.7fr); gap:40px; align-items:start;
+  }
+  .kicker{
+    font-family:var(--font-mono); font-size:12px; letter-spacing:0.18em;
+    text-transform:uppercase; color:var(--brass-light); margin:0 0 30px;
+  }
+  .hero h1{
+    font-family:var(--font-display); font-weight:700;
+    font-size:clamp(46px, 7.7vw, 108px); line-height:0.93; letter-spacing:-0.05em;
+    margin:0 0 32px; color:var(--paper);
+  }
+  .hero h1 em{
+    font-style:normal; color:var(--brass-light);
+    text-decoration:underline; text-decoration-thickness:0.055em; text-underline-offset:0.09em;
+  }
+  .hero .sub{
+    font-family:var(--font-serif); font-size:clamp(22px, 2.3vw, 28px); line-height:1.22;
+    max-width:620px; margin:0 0 36px; color:var(--paper);
+  }
+  .hero-cta{display:flex; align-items:center; gap:26px; flex-wrap:wrap;}
+  .btn-solid{
+    display:inline-flex; align-items:center; min-height:56px; padding:0 30px;
+    border-radius:999px; background:var(--paper); color:var(--ink-950);
+    font-size:16px; font-weight:600; transition:transform 0.15s ease, opacity 0.2s ease;
+  }
+  .btn-solid:hover{opacity:0.88;}
+  .btn-solid:active{transform:scale(0.97);}
+  .link-ul{font-size:16px; font-weight:500; text-decoration:underline; text-underline-offset:5px; text-decoration-thickness:1px;}
+  .link-ul:hover{color:var(--brass-light);}
+
+  .stage{position:relative; min-height:620px;}
+  .note{
+    position:absolute; left:12%; top:10px; width:min(380px, 86%);
+    padding:30px; background:var(--paper-note); color:var(--note-ink);
+    border-radius:4px; transform:rotate(-3deg);
+    box-shadow:0 18px 40px -14px rgba(0,0,0,0.28), 0 0 0 1px rgba(21,22,27,0.08);
+  }
+  .note-label{font-family:var(--font-mono); font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:#54545D;}
+  .note p{font-family:var(--font-serif); font-size:26px; line-height:1.2; margin:14px 0;}
+  .note-sign{font-family:var(--font-serif); font-style:italic; font-size:30px; color:#C81F63;}
+  .polaroid{
+    position:absolute; right:0; top:350px; width:min(230px, 52%);
+    padding:14px 14px 16px; background:var(--paper-note); color:var(--note-ink);
+    transform:rotate(5deg); border-radius:3px;
+    box-shadow:0 16px 34px -12px rgba(0,0,0,0.3), 0 0 0 1px rgba(21,22,27,0.08);
+  }
+  .polaroid .ph{aspect-ratio:1; background:linear-gradient(135deg, #2DD4EE, #FF4FA3);}
+  .polaroid span{display:block; text-align:center; margin-top:12px; font-family:var(--font-serif); font-style:italic; font-size:20px;}
+  .sticker{
+    position:absolute; display:flex; align-items:center; justify-content:center; text-align:center;
+    border-radius:50%; border:2px solid #15161B; color:#15161B;
+    font-family:var(--font-display); font-weight:700; text-transform:uppercase; line-height:1.08;
+  }
+  .sticker.s1{left:0; top:400px; width:130px; height:130px; font-size:18px; background:#FF4FA3; transform:rotate(-12deg);}
+  .sticker.s2{right:8%; top:326px; width:112px; height:112px; font-size:15px; background:#2DD4EE; transform:rotate(10deg);}
+  @media (max-width: 980px){
+    section.hero{grid-template-columns:1fr; padding-top:48px; padding-bottom:64px;}
+    .stage{min-height:600px; max-width:520px;}
+  }
+
+  /* Ticker */
+  .ticker{background:var(--inv-bg); color:var(--inv-fg); overflow:hidden;}
+  .ticker-track{display:flex; width:max-content; animation:tick 60s linear infinite;}
+  .ticker-group{
+    display:flex; align-items:center; gap:36px; list-style:none; margin:0; padding:18px 18px;
+    font-family:var(--font-mono); font-size:13px; letter-spacing:0.16em; text-transform:uppercase; white-space:nowrap;
+  }
+  .ticker-group .star{color:var(--pink);}
+  @keyframes tick{ to{ transform:translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce){
+    .ticker-track{animation:none; width:auto; justify-content:center; flex-wrap:wrap;}
+    .ticker-group{flex-wrap:wrap; justify-content:center; white-space:normal;}
+    .ticker-group[aria-hidden="true"]{display:none;}
+  }
+
+  /* App index */
+  .sec-label{font-family:var(--font-mono); font-size:12px; letter-spacing:0.18em; text-transform:uppercase; color:var(--brass-light);}
+  section.index{padding:104px 0 96px;}
+  .index-inner{max-width:1280px; margin:0 auto; padding:0 var(--gutter);}
+  .index-head{display:flex; justify-content:space-between; align-items:flex-end; gap:24px; flex-wrap:wrap; padding-bottom:40px;}
+  .index-head p{font-family:var(--font-serif); font-size:clamp(28px, 3.6vw, 44px); line-height:1.05; text-align:right; margin:0; max-width:540px;}
+  .app-row{
+    position:relative; isolation:isolate; display:grid;
+    grid-template-columns:44px minmax(0,1.5fr) minmax(0,1fr) 60px; gap:32px; align-items:center;
+    padding:34px 0; border-top:1px solid var(--border-medium);
+    transition:color 0.2s ease;
+  }
+  .app-row:last-child{border-bottom:1px solid var(--border-medium);}
+  .app-row::before{
+    content:""; position:absolute; inset:-1px -24px; z-index:-1;
+    background:var(--hl); opacity:0; transition:opacity 0.2s ease;
+  }
+  .app-row.is-active{color:var(--hl-ink);}
+  .app-row.is-active::before{opacity:1;}
+  .app-no{font-family:var(--font-mono); font-size:14px; color:var(--paper-dim);}
+  .app-row.is-active .app-no{color:var(--hl-ink);}
+  .app-name{font-family:var(--font-display); font-weight:700; font-size:clamp(34px, 5.2vw, 68px); line-height:1.05; letter-spacing:-0.05em;}
+  .app-mid{display:flex; flex-direction:column; align-items:flex-start; gap:10px;}
+  .app-tag{
+    font-family:var(--font-mono); font-size:10px; letter-spacing:0.14em; text-transform:uppercase;
+    padding:4px 10px; border-radius:999px; border:1px solid var(--tag, var(--border-strong));
+  }
+  .app-row[data-app="pet"]{--tag:var(--pink);}
+  .app-row[data-app="matrix"]{--tag:var(--violet);}
+  .app-row[data-app="summary"]{--tag:var(--cyan);}
+  .app-row.is-active .app-tag{background:var(--hl-ink); color:var(--hl); border-color:var(--hl-ink);}
+  .app-desc{font-size:15px; line-height:1.5; color:var(--paper-dim);}
+  .app-row.is-active .app-desc{color:var(--hl-ink);}
+  .app-go{
+    width:60px; height:60px; border-radius:50%; border:1px solid var(--border-strong);
+    display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:500;
+    transition:background 0.2s ease, color 0.2s ease;
+  }
+  .app-row.is-active .app-go{background:var(--hl-ink); color:#fff; border-color:var(--hl-ink);}
+  .app-main::after{content:""; position:absolute; inset:0; z-index:1;}
+  .app-alt{position:relative; z-index:2; align-self:flex-start; margin-top:6px; font-size:14px; font-weight:600; text-decoration:underline; text-underline-offset:4px;}
+  .app-alt:hover{opacity:0.7;}
+  .app-mid:has(.app-alt){display:flex; flex-direction:column; align-items:flex-start;}
+  .app-row.is-soon{opacity:0.55;}
+  @media (max-width: 860px){
+    .app-row{grid-template-columns:32px minmax(0,1fr) 48px; gap:12px 16px; padding:26px 0;}
+    .app-row::before{inset:-1px -16px;}
+    .app-mid{grid-column:2 / 4; order:3;}
+    .app-go{width:48px; height:48px; font-size:20px;}
+    .index-head p{text-align:left;}
+  }
+
+  /* Pass: inverted section with ticket-style tiers */
+  section#pass{background:var(--inv-bg); color:var(--inv-fg); padding:104px 0 112px; border-block:1px solid var(--inv-line);}
+  .pass-inner{max-width:1280px; margin:0 auto; padding:0 var(--gutter);}
+  .pass-head{display:flex; justify-content:space-between; align-items:flex-end; gap:40px; flex-wrap:wrap; margin-bottom:56px;}
+  #pass .sec-label{color:var(--pink);}
+  #pass h2{font-family:var(--font-display); font-weight:700; font-size:clamp(48px, 7vw, 96px); line-height:0.94; letter-spacing:-0.05em; color:var(--inv-fg); margin:18px 0 0;}
+  .pass-aside{max-width:430px;}
+  .pass-aside p{font-family:var(--font-serif); font-size:26px; line-height:1.2; margin:0 0 22px; color:var(--inv-fg);}
+  #pass .tier-toggle{display:inline-flex; padding:4px; border-radius:999px; border:1px solid var(--inv-line); background:none; margin:0;}
+  #pass .tier-toggle button{
+    display:inline-flex; align-items:center; gap:8px; padding:9px 20px; border-radius:999px; border:none; background:none;
+    font:600 13px var(--font-body); color:var(--inv-fg); cursor:pointer; transition:background 0.2s ease, color 0.2s ease;
+  }
+  #pass .tier-toggle button.active{background:var(--inv-fg); color:var(--inv-bg);}
+  .save-chip{font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:999px; background:var(--cyan); color:#08101F;}
+  .price-yearly{display:none;}
+  .tiers.yearly .price-monthly{display:none;}
+  .tiers.yearly .price-yearly{display:inline;}
+  .tiers{display:grid; grid-template-columns:repeat(3, 1fr); gap:24px; align-items:stretch;}
+  .tier{
+    display:flex; flex-direction:column; gap:18px; padding:34px; border-radius:20px;
+    background:var(--inv-card); border:1px solid var(--inv-line); color:var(--inv-fg);
+  }
+  .tier.best{background:var(--pink); color:#15161B; border-color:transparent;}
+  .tier-top{display:flex; justify-content:space-between; align-items:center; font-family:var(--font-mono); font-size:12px; letter-spacing:0.16em; text-transform:uppercase; min-height:24px;}
+  .tier:not(.best) .tier-top > span:first-child{opacity:0.7;}
+  .tier-badge{background:#15161B; color:#F6F5F1; padding:4px 10px; border-radius:999px; font-size:10px; letter-spacing:0.12em;}
+  .tier-price{font-family:var(--font-display); font-weight:700; font-size:clamp(52px, 5.6vw, 76px); line-height:1; letter-spacing:-0.06em;}
+  .tier-price small{font-family:var(--font-body); font-size:16px; font-weight:500; letter-spacing:0; opacity:0.7;}
+  .tier-note{font-family:var(--font-serif); font-style:italic; font-size:22px; opacity:0.85;}
+  .tier hr{border:0; border-top:1.5px dashed currentColor; opacity:0.4; margin:0;}
+  .tier ul{list-style:none; margin:0; padding:0; display:grid; gap:10px; flex:1; align-content:start; font-size:15px;}
+  .tier li{position:relative; padding-left:24px; line-height:1.4;}
+  .tier li::before{content:"✓"; position:absolute; left:0; font-weight:700; color:var(--cyan);}
+  .tier.best li::before{color:#15161B;}
+  .tier-cta{
+    display:flex; justify-content:center; padding:15px; border-radius:999px; font-size:15px; font-weight:600;
+    border:1px solid currentColor; color:inherit; transition:opacity 0.2s ease, transform 0.15s ease;
+  }
+  .tier-cta:hover{opacity:0.8;}
+  .tier-cta:active{transform:scale(0.98);}
+  .tier.best .tier-cta{background:#15161B; color:#F6F5F1; border-color:#15161B;}
+  .fair-use{margin:28px 0 0; font-size:13px; color:var(--inv-fg); opacity:0.6;}
+  @media (max-width: 960px){
+    .tiers{grid-template-columns:1fr;}
+    section#pass{padding:72px 0 80px;}
+  }
+
+  /* Footer */
+  footer.foot{padding:72px 0 0; overflow:hidden;}
+  .foot-inner{max-width:1280px; margin:0 auto; padding:0 var(--gutter);}
+  .foot-top{display:flex; justify-content:space-between; gap:48px; flex-wrap:wrap;}
+  .foot-tag{font-family:var(--font-serif); font-size:clamp(24px, 2.6vw, 32px); line-height:1.12; margin:0; max-width:540px;}
+  .foot-cols{display:flex; gap:60px; flex-wrap:wrap;}
+  .foot-cols h4{font-family:var(--font-mono); font-size:11px; font-weight:500; letter-spacing:0.16em; text-transform:uppercase; color:var(--brass-light); margin:0 0 12px;}
+  .foot-cols a{display:block; font-size:15px; padding:5px 0; color:var(--paper);}
+  .foot-cols a:hover{color:var(--brass-light);}
+  .foot-legal{font-size:12.5px; line-height:1.7; color:var(--paper-dim); max-width:780px; margin:56px 0 0;}
+  .foot-legal a{text-decoration:underline; text-underline-offset:3px;}
+  .foot-mark{
+    font-family:var(--font-display); font-weight:700; font-size:clamp(110px, 27vw, 380px);
+    line-height:1; letter-spacing:-0.06em; height:0.68em; overflow:hidden; margin-top:32px;
+    user-select:none; white-space:nowrap;
+  }
+  .foot-mark span{color:var(--brass-light);}
+
+  /* QA fixes */
+  nav.links a, .mast .btn-pill{white-space:nowrap;}
+  .foot-mark{height:0.74em; padding-right:.05em;}
+  .foot-tag{text-wrap:balance;}
+  .stage{min-height:680px;}
+  .note{width:min(400px, 86%);}
+  .polaroid{top:430px;}
+  .sticker.s1{top:470px;}
+  .sticker.s2{top:410px;}
+  @media (max-width: 980px){ .stage{min-height:700px;} }
+  #account .account-box{
+    background:var(--paper-note, #fff); color:var(--note-ink, #15161B);
+    border:1.5px solid #15161B; border-radius:6px;
+    box-shadow:6px 6px 0 #15161B;
+  }
+  #account .acct-label, #account .acct-hint, #account .acct-email, #account .acct-label span{color:var(--note-ink, #15161B);}
+  #account .acct-input{background:#fff; color:#15161B; border:1.5px solid #15161B;}
+  #account .acct-input:focus{border-color:#D6266E; outline:2px solid #2DD4EE;}
+  .tier .unit, .price-monthly small, .price-yearly small{margin-left:.35em;}
+
+</style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">{{t:skip}}</a>
+
+<header class="mast">
+  <div class="mast-inner">
+    <a href="{{href:self}}" class="wordmark" aria-label="byphil">byphil<span class="dot">.</span></a>
+    <span class="mast-meta">{{t:mast.meta}}</span>
+    <div class="mast-right">
+      <nav class="links" aria-label="{{a:nav.label}}">
+        <a href="#tools">{{t:nav.tools}}</a>
+        <a href="#pass">{{t:nav.pass}}</a>
+        <a href="#account" id="navSignIn">{{t:nav.signin}}</a>
+      </nav>
+      <div class="lang" role="group" aria-label="{{a:nav.language}}">
+        <a href="{{href:en}}" hreflang="en" lang="en" aria-current="{{cur:en}}">EN</a><span aria-hidden="true">/</span><a href="{{href:de}}" hreflang="de" lang="de" aria-current="{{cur:de}}">DE</a>
+      </div>
+      <button type="button" class="theme-toggle" id="themeToggle" aria-label="{{a:nav.themeToLight}}">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.6"/><path d="M12 2.5v2.4M12 19.1v2.4M4.4 4.4l1.7 1.7M17.9 17.9l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.4 19.6l1.7-1.7M17.9 6.1l1.7-1.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+      <a href="#pass" class="btn-pill">{{t:nav.cta}}</a>
+    </div>
+    <button type="button" class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="mobileMenu" aria-label="{{a:nav.menu}}">
+      <svg viewBox="0 0 24 24" fill="none" id="navToggleIcon"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu" hidden>
+    <div class="mobile-menu-inner">
+      <a href="#tools">{{t:nav.tools}}</a>
+      <a href="#pass">{{t:nav.pass}}</a>
+      <a href="#account">{{t:nav.signin}}</a>
+      <a href="{{base}}terms.html#impressum">{{t:nav.impressum}}</a>
+      <div class="mobile-lang"><a href="{{href:en}}" hreflang="en" lang="en" aria-current="{{cur:en}}">English</a><a href="{{href:de}}" hreflang="de" lang="de" aria-current="{{cur:de}}">Deutsch</a></div>
+      <button type="button" class="theme-toggle-mobile" id="themeToggleMobile">
+        <span id="themeToggleMobileLabel">{{t:nav.themeToLight}}</span>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.6"/><path d="M12 2.5v2.4M12 19.1v2.4M4.4 4.4l1.7 1.7M17.9 17.9l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.4 19.6l1.7-1.7M17.9 6.1l1.7-1.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+      <a href="#pass" class="mobile-cta">{{t:nav.cta}}</a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero">
+    <div class="hero-copy">
+      <p class="kicker">{{t:hero.kicker}}</p>
+      <h1>{{t:hero.h1}}</h1>
+      <p class="sub">{{t:hero.sub}}</p>
+      <div class="hero-cta">
+        <a href="#pass" class="btn-solid">{{t:hero.cta1}}</a>
+        <a href="#tools" class="link-ul">{{t:hero.cta2}}</a>
+      </div>
+    </div>
+    <div class="stage" aria-hidden="true">
+      <div class="note">
+        <span class="note-label">{{t:note.label}}</span>
+        <p>{{t:note.body}}</p>
+        <span class="note-sign">{{t:note.sign}}</span>
+      </div>
+      <div class="polaroid"><div class="ph"></div><span>{{t:polaroid.caption}}</span></div>
+      <div class="sticker s1">{{t:sticker.cookies}}</div>
+      <div class="sticker s2">{{t:sticker.investors}}</div>
+    </div>
+  </section>
+
+  <div class="ticker">
+    <div class="ticker-track">
+      <ul class="ticker-group" aria-label="{{a:trust.label}}"><li>{{t:trust.1}}</li><li class="star" aria-hidden="true">✦</li><li>{{t:trust.2}}</li><li class="star" aria-hidden="true">✦</li><li>{{t:trust.3}}</li><li class="star" aria-hidden="true">✦</li><li>{{t:trust.4}}</li><li class="star" aria-hidden="true">✦</li><li>{{t:trust.1}}</li><li class="star" aria-hidden="true">✦</li><li>{{t:trust.2}}</li><li class="star" aria-hidden="true">✦</li><li>{{t:trust.3}}</li><li class="star" aria-hidden="true">✦</li><li>{{t:trust.4}}</li><li class="star" aria-hidden="true">✦</li></ul>
+      <ul class="ticker-group" aria-hidden="true"><li>{{t:trust.1}}</li><li class="star" aria-hidden="true">✦</li><li>{{t:trust.2}}</li><li class="star" aria-hidden="true">✦</li><li>{{t:trust.3}}</li><li class="star" aria-hidden="true">✦</li><li>{{t:trust.4}}</li><li class="star" aria-hidden="true">✦</li><li>{{t:trust.1}}</li><li class="star" aria-hidden="true">✦</li><li>{{t:trust.2}}</li><li class="star" aria-hidden="true">✦</li><li>{{t:trust.3}}</li><li class="star" aria-hidden="true">✦</li><li>{{t:trust.4}}</li><li class="star" aria-hidden="true">✦</li></ul>
+    </div>
+  </div>
+  <section id="tools" class="index">
+    <div class="index-inner">
+      <div class="index-head">
+        <span class="sec-label">{{t:tools.label}}</span>
+        <p>{{t:tools.lead}}</p>
+      </div>
+    <div class="app-row is-active" data-app="summary">
+      <span class="app-no">01</span>
+      <span class="app-name"><a class="app-main" href="https://chromewebstore.google.com/detail/ai-summary-helper-openai/hldbejcjaedipeegjcinmhejdndchkmb?hl={{lang}}">AI Summary Helper</a></span>
+      <span class="app-mid"><span class="app-tag">{{t:app.summary.cat}}</span><span class="app-desc">{{t:app.summary.desc}}</span><a class="app-alt" href="https://ai-summary-helper.byphil.eu/">{{t:app.summary.web}} ↗</a></span>
+      <span class="app-go" aria-hidden="true">↗</span>
+    </div>
+    <a class="app-row" href="https://petsetlife.byphil.eu/" data-app="pet">
+      <span class="app-no">02</span>
+      <span class="app-name">PetSetLife</span>
+      <span class="app-mid"><span class="app-tag">{{t:app.pet.cat}}</span><span class="app-desc">{{t:app.pet.desc}}</span></span>
+      <span class="app-go" aria-hidden="true">↗</span>
+    </a>
+    <a class="app-row" href="https://matrix.byphil.eu/" data-app="matrix">
+      <span class="app-no">03</span>
+      <span class="app-name">Matrix</span>
+      <span class="app-mid"><span class="app-tag">{{t:app.matrix.cat}}</span><span class="app-desc">{{t:app.matrix.desc}}</span></span>
+      <span class="app-go" aria-hidden="true">↗</span>
+    </a>
+      <div class="app-row is-soon" data-app="next">
+        <span class="app-no">04</span>
+        <span class="app-name">{{t:app.next.name}}</span>
+        <span class="app-mid"><span class="app-tag">{{t:app.next.cat}}</span><span class="app-desc">{{t:app.next.desc}}</span></span>
+        <span class="app-go" aria-hidden="true">…</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="pass">
+    <div class="pass-inner">
+      <div class="pass-head">
+        <div>
+          <span class="sec-label">{{t:pass.label}}</span>
+          <h2>{{t:pass.title}}</h2>
+        </div>
+        <div class="pass-aside">
+          <p>{{t:pass.lead}}</p>
+          <div class="tier-toggle" role="tablist" aria-label="{{a:pass.billing}}">
+            <button type="button" class="active" id="btnMonthly" onclick="setBilling('monthly')">{{t:pass.monthly}}</button>
+            <button type="button" id="btnYearly" onclick="setBilling('yearly')">{{t:pass.yearly}} <span class="save-chip">{{t:pass.save}}</span></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="tiers" id="tiersGrid">
+        <div class="tier">
+          <div class="tier-top"><span>{{t:tier.free.name}}</span></div>
+          <div class="tier-price">{{t:tier.free.price}}</div>
+          <div class="tier-note">{{t:tier.free.note}}</div>
+          <hr>
+          <ul><li>{{t:tier.free.li1}}</li><li>{{t:tier.free.li2}}</li></ul>
+          <a href="#account" class="tier-cta">{{t:tier.free.cta}}</a>
+        </div>
+
+        <div class="tier best">
+          <div class="tier-top"><span>{{t:tier.pass.name}}</span><span class="tier-badge">{{t:tier.best}}</span></div>
+          <div class="tier-price">
+            <span class="price-monthly">{{t:tier.pass.priceMonthly}}<small>{{t:tier.pass.perMonth}}</small></span>
+            <span class="price-yearly">{{t:tier.pass.priceYearly}}<small>{{t:tier.pass.perYear}}</small></span>
+          </div>
+          <div class="tier-note"><span class="price-monthly">{{t:tier.pass.billedMonthly}}</span><span class="price-yearly">{{t:tier.pass.billedYearly}}</span></div>
+          <hr>
+          <ul><li>{{t:tier.pass.li1}}</li><li>{{t:tier.pass.li2}}</li><li>{{t:tier.pass.li3}}</li></ul>
+          <a href="https://buy.stripe.com/8x24gy3Lj9RkeAl9T5bEA02" class="tier-cta" id="ctaSupportPass" target="_blank" rel="noopener">{{t:tier.pass.cta}}</a>
+        </div>
+
+        <div class="tier">
+          <div class="tier-top"><span>{{t:tier.donor.name}}</span></div>
+          <div class="tier-price">{{t:tier.donor.price}} <small>{{t:tier.donor.once}}</small></div>
+          <div class="tier-note">{{t:tier.donor.note}}</div>
+          <hr>
+          <ul><li>{{t:tier.donor.li1}}</li><li>{{t:tier.donor.li2}}</li></ul>
+          <a href="https://buy.stripe.com/dRmbJ0bdLfbEbo95CPbEA04" class="tier-cta" target="_blank" rel="noopener">{{t:tier.donor.cta}}</a>
+        </div>
+      </div>
+      <p class="fair-use">{{t:pass.fairuse}}</p>
+    </div>
+  </section>
+
+<section id="account">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">{{t:account.eyebrow}}</div>
+        <h2>{{t:account.title}}</h2>
+        <p>{{t:account.intro}}</p>
+      </div>
+
+      <div class="account-box reveal">
+        <!-- Stage 1: email -->
+        <div class="account-stage" id="stageEmail">
+          <label for="acctEmail" class="acct-label">{{t:account.emailLabel}}</label>
+          <form class="acct-row" onsubmit="handleSendCode(event)" novalidate>
+            <input type="email" id="acctEmail" class="acct-input" placeholder="you@example.com" autocomplete="email" required>
+            <button type="submit" class="btn-primary" id="btnRequestOtp">{{t:account.sendCode}}</button>
+          </form>
+          <p class="acct-hint" id="acctMsgEmail" aria-live="polite"></p>
+        </div>
+
+        <!-- Stage 2: code -->
+        <div class="account-stage" id="stageCode" style="display:none;">
+          <label for="acctCode" class="acct-label">{{t:account.codeSentTo}} <span id="acctEmailEcho"></span></label>
+          <form class="acct-row" onsubmit="handleVerifyOtp(event)" novalidate>
+            <input type="text" id="acctCode" class="acct-input mono" placeholder="000000" maxlength="6" inputmode="numeric" autocomplete="one-time-code" required>
+            <button type="submit" class="btn-primary" id="btnVerifyOtp">{{t:account.verify}}</button>
+          </form>
+          <p class="acct-hint" id="acctMsgCode" aria-live="polite"></p>
+          <button type="button" class="acct-link-btn" onclick="resetToEmailStage()">{{t:account.differentEmail}}</button>
+        </div>
+
+        <!-- Stage 3: signed in -->
+        <div class="account-stage" id="stageIn" style="display:none;">
+          <div class="acct-signed-in">
+            <div>
+              <div class="acct-label" style="margin-bottom:4px;">{{t:account.signedInAs}}</div>
+              <div class="acct-email" id="acctSignedEmail">—</div>
+            </div>
+            <button type="button" class="btn-secondary" onclick="signOut()">{{t:account.signOut}}</button>
+          </div>
+          <div class="account-overview" aria-label="{{a:account.overview}}">
+            <div class="account-stat"><span>{{t:account.membership}}</span><strong id="accountTier">Free</strong></div>
+            <div class="account-stat"><span>{{t:account.memberSince}}</span><strong id="accountCreated">—</strong></div>
+            <div class="account-stat"><span>{{t:account.appsWithData}}</span><strong id="accountAppsCount">0</strong></div>
+          </div>
+          <div class="account-license" id="licenseActions">
+            <h3>{{t:account.linkTitle}}</h3>
+            <p id="accountLicense">{{t:account.noLicense}}</p>
+            <div class="acct-row">
+              <input type="text" id="licenseKeyInput" class="acct-input" placeholder="{{a:account.licensePlaceholder}}" autocomplete="off">
+              <button type="button" class="btn-primary" onclick="linkLicense()">{{t:account.link}}</button>
+            </div>
+          </div>
+          <p class="acct-hint" id="acctMsgAccount" aria-live="polite"></p>
+          <div class="account-actions">
+            <button type="button" class="btn-secondary" onclick="refreshAccount()">{{t:account.refresh}}</button>
+            <button type="button" class="btn-secondary" onclick="downloadAccountData()">{{t:account.download}}</button>
+            <button type="button" class="btn-secondary btn-danger" onclick="deleteAccount()">{{t:account.delete}}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="foot-inner">
+    <div class="foot-top">
+      <p class="foot-tag">{{t:foot.tag}}</p>
+      <div class="foot-cols">
+        <div>
+          <h4>{{t:foot.apps}}</h4>
+          <a href="https://chromewebstore.google.com/detail/ai-summary-helper-openai/hldbejcjaedipeegjcinmhejdndchkmb?hl={{lang}}">AI Summary Helper</a>
+          <a href="https://petsetlife.byphil.eu/">PetSetLife</a>
+          <a href="https://matrix.byphil.eu/">Matrix</a>
+        </div>
+        <div>
+          <h4>{{t:foot.legal}}</h4>
+          <a href="{{base}}terms.html#privacy">{{t:foot.privacy}}</a>
+          <a href="{{base}}terms.html#terms-of-service">{{t:foot.terms}}</a>
+          <a href="{{base}}terms.html#refunds">{{t:foot.refunds}}</a>
+          <a href="{{base}}terms.html#impressum">{{t:nav.impressum}}</a>
+        </div>
+        <div>
+          <h4>{{t:foot.elsewhere}}</h4>
+          <a href="https://github.com/philffm/ai-summary-helper/" target="_blank" rel="noopener">{{t:foot.github}}</a>
+          <a href="https://philwornath.com/" target="_blank" rel="noopener">philwornath.com ↗</a>
+        </div>
+      </div>
+    </div>
+    <p class="foot-legal">{{t:foot.copy}}<br>
+      <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener">{{t:foot.odr}}</a> · {{t:foot.credit}} <a href="https://philwornath.com/" target="_blank" rel="noopener">philwornath.com ↗</a>
+    </p>
+    <div class="foot-mark" aria-hidden="true">byphil<span>.</span></div>
+  </div>
+</footer>
+
+<script>window.I18N = {{i18n-js}};</script>
+<script>
+  const t = (key) => (window.I18N && window.I18N[key]) || key;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ── Theme toggle (light / dark) ──────────────────────────────────── */
+  (function(){
+    const root = document.documentElement;
+    const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+    const btnDesktop = document.getElementById('themeToggle');
+    const btnMobile = document.getElementById('themeToggleMobile');
+    const mobileLabel = document.getElementById('themeToggleMobileLabel');
+
+    function applyThemeChrome(theme){
+      if (themeColorMeta) themeColorMeta.setAttribute('content', theme === 'light' ? '#F6F5F1' : '#08090C');
+      const nextLabel = theme === 'light' ? t('nav.themeToDark') : t('nav.themeToLight');
+      if (btnDesktop) btnDesktop.setAttribute('aria-label', nextLabel);
+      if (mobileLabel) mobileLabel.textContent = nextLabel;
+    }
+
+    function setTheme(theme){
+      root.setAttribute('data-theme', theme);
+      try { localStorage.setItem('byphil_theme', theme); } catch (e) {}
+      applyThemeChrome(theme);
+    }
+
+    function toggleTheme(){
+      const current = root.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+      setTheme(current === 'light' ? 'dark' : 'light');
+    }
+
+    applyThemeChrome(root.getAttribute('data-theme') === 'light' ? 'light' : 'dark');
+    if (btnDesktop) btnDesktop.addEventListener('click', toggleTheme);
+    if (btnMobile) btnMobile.addEventListener('click', toggleTheme);
+
+    // Follow OS changes only if the person hasn't picked a theme explicitly.
+    if (window.matchMedia) {
+      window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', (e) => {
+        let saved = null;
+        try { saved = localStorage.getItem('byphil_theme'); } catch (err) {}
+        if (!saved) setTheme(e.matches ? 'light' : 'dark');
+      });
+    }
+  })();
+
+  /* ── App index: the row under the pointer / focus takes the highlight ── */
+  (function(){
+    const rows = Array.from(document.querySelectorAll('.app-row:has(a[href])'));
+    rows.forEach(row => {
+      const activate = () => rows.forEach(r => r.classList.toggle('is-active', r === row));
+      row.addEventListener('mouseenter', activate);
+      row.addEventListener('focusin', activate);
+    });
+  })();
+
+  /* ── Scroll-reveal for .reveal elements ──────────────────────────── */
+  if ('IntersectionObserver' in window && !reduceMotion) {
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+  } else {
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('is-visible'));
+  }
+
+  /* ── Mobile nav toggle ────────────────────────────────────────────── */
+  const navToggle = document.getElementById('navToggle');
+  const mobileMenu = document.getElementById('mobileMenu');
+
+  function closeMobileMenu(){
+    mobileMenu.hidden = true;
+    navToggle.setAttribute('aria-expanded', 'false');
+    navToggle.setAttribute('aria-label', 'Open menu');
+  }
+  function openMobileMenu(){
+    mobileMenu.hidden = false;
+    navToggle.setAttribute('aria-expanded', 'true');
+    navToggle.setAttribute('aria-label', 'Close menu');
+  }
+  navToggle.addEventListener('click', () => {
+    if (mobileMenu.hidden) openMobileMenu(); else closeMobileMenu();
+  });
+  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMobileMenu));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !mobileMenu.hidden) closeMobileMenu();
+  });
+  document.addEventListener('click', (e) => {
+    if (!mobileMenu.hidden && !mobileMenu.contains(e.target) && !navToggle.contains(e.target)) {
+      closeMobileMenu();
+    }
+  });
+
+  const STRIPE_LINKS = {
+    monthly: 'https://buy.stripe.com/8x24gy3Lj9RkeAl9T5bEA02',
+    yearly: 'https://buy.stripe.com/7sY3cu4Pnd3wak5d5hbEA03'
+  };
+
+  function setBilling(period){
+    const grid = document.getElementById('tiersGrid');
+    const bm = document.getElementById('btnMonthly');
+    const by = document.getElementById('btnYearly');
+    const supportPassCta = document.getElementById('ctaSupportPass');
+    if (period === 'yearly') {
+      grid.classList.add('yearly');
+      by.classList.add('active');
+      bm.classList.remove('active');
+      if (supportPassCta) supportPassCta.href = STRIPE_LINKS.yearly;
+    } else {
+      grid.classList.remove('yearly');
+      bm.classList.add('active');
+      by.classList.remove('active');
+      if (supportPassCta) supportPassCta.href = STRIPE_LINKS.monthly;
+    }
+  }
+
+    /* ── Auth: uses the same API contract as the previous page and the
+      extension. The redesigned UI only changes the presentation. ── */
+    const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+     ? 'http://localhost:3000/v1'
+     : 'https://api.byphil.eu/v1';
+    const TOKEN_STORAGE_KEY = 'byphil_auth_token';
+    const OTP_STORAGE_KEY = 'byphil_auth_otp_id';
+    const EMAIL_STORAGE_KEY = 'byphil_auth_email';
+
+  function showHint(el, message, kind){
+    el.textContent = message || '';
+    el.className = 'acct-hint' + (kind ? ' ' + kind : '');
+  }
+
+  function renderAuthState(record){
+    const navBtn = document.getElementById('navSignIn');
+    document.getElementById('stageEmail').style.display = 'none';
+    document.getElementById('stageCode').style.display = 'none';
+    document.getElementById('stageIn').style.display = 'none';
+
+    if (record && record.email) {
+      document.getElementById('stageIn').style.display = 'block';
+      document.getElementById('acctSignedEmail').textContent = record.email;
+      document.getElementById('accountTier').textContent = String(record.subscription_status || 'free').toUpperCase();
+      document.getElementById('accountCreated').textContent = formatDate(record.created);
+      const appData = record.app_data && typeof record.app_data === 'object' ? record.app_data : {};
+      document.getElementById('accountAppsCount').textContent = String(Object.keys(appData).length);
+      document.getElementById('licenseActions').style.display = record.license_key ? 'none' : 'block';
+      if (navBtn) navBtn.textContent = t('js.myAccount');
+    } else {
+      document.getElementById('stageEmail').style.display = 'block';
+      if (navBtn) navBtn.textContent = t('js.signIn');
+    }
+  }
+
+  function resetToEmailStage(){
+    localStorage.removeItem(OTP_STORAGE_KEY);
+    document.getElementById('acctCode').value = '';
+    showHint(document.getElementById('acctMsgCode'), '');
+    document.getElementById('stageCode').style.display = 'none';
+    document.getElementById('stageEmail').style.display = 'block';
+  }
+
+  /* Submit handlers for the email + OTP forms. They prevent the default
+     page reload and route straight into the existing request/verify logic,
+     so pressing Enter (desktop) or "Go/Submit" (mobile keyboard) works. */
+  function handleSendCode(e){
+    e.preventDefault();
+    requestOtp();
+  }
+
+  function handleVerifyOtp(e){
+    e.preventDefault();
+    verifyOtp();
+  }
+
+  async function apiRequest(path, options = {}){
+    const token = localStorage.getItem(TOKEN_STORAGE_KEY);
+    const headers = {
+      'Content-Type': 'application/json',
+      ...(options.headers || {})
+    };
+    if (token) headers.Authorization = `Bearer ${token}`;
+    return fetch(`${API_BASE}${path}`, { ...options, headers });
+  }
+
+  async function loadAccountFromToken(){
+    if (!localStorage.getItem(TOKEN_STORAGE_KEY)) {
+      renderAuthState(null);
+      return;
+    }
+
+    try {
+      const res = await apiRequest('/auth/me', { method: 'GET' });
+      const data = await res.json();
+      if (!res.ok || !data?.success || !data.record?.email) {
+        localStorage.removeItem(TOKEN_STORAGE_KEY);
+        renderAuthState(null);
+        return;
+      }
+      renderAuthState(data.record);
+    } catch (err) {
+      renderAuthState(null);
+    }
+  }
+
+  function formatDate(isoDate){
+    if (!isoDate) return '—';
+    const parsed = new Date(isoDate);
+    return Number.isNaN(parsed.getTime()) ? '—' : parsed.toLocaleDateString(document.documentElement.lang || undefined);
+  }
+
+  function showAccountHint(message, kind){
+    showHint(document.getElementById('acctMsgAccount'), message, kind);
+  }
+
+  async function refreshAccount(){
+    showAccountHint('');
+    await loadAccountFromToken();
+    if (document.getElementById('stageIn').style.display === 'block') {
+      showAccountHint(t('js.acctUpdated'), 'ok');
+    }
+  }
+
+  async function linkLicense(){
+    const input = document.getElementById('licenseKeyInput');
+    const licenseKey = input.value.trim();
+    if (!licenseKey) {
+      showAccountHint(t('js.enterLicense'), 'error');
+      input.focus();
+      return;
+    }
+    try {
+      const res = await apiRequest('/auth/link-license', {
+        method: 'POST',
+        body: JSON.stringify({ project_id: 'ai_summary_helper', license_key: licenseKey })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data?.success) throw new Error(data?.error || t('js.licenseFail'));
+      input.value = '';
+      await loadAccountFromToken();
+      showAccountHint(t('js.licenseOk'), 'ok');
+    } catch (err) {
+      showAccountHint(err.message || t('js.licenseFail'), 'error');
+    }
+  }
+
+  async function downloadAccountData(){
+    showAccountHint('');
+    try {
+      const res = await apiRequest('/auth/export-data', { method: 'GET' });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data?.error || t('js.exportFail'));
+      }
+      const blob = await res.blob();
+      const filename = res.headers.get('content-disposition')?.match(/filename="([^"]+)"/)?.[1] || 'byphil-account-export.json';
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+      showAccountHint(t('js.exportOk'), 'ok');
+    } catch (err) {
+      showAccountHint(err.message || t('js.downloadFail'), 'error');
+    }
+  }
+
+  async function deleteAccount(){
+    if (!window.confirm(t('js.deleteConfirm'))) return;
+    if (window.prompt(t('js.deletePrompt')) !== 'DELETE') {
+      showAccountHint(t('js.deleteCancelled'), 'error');
+      return;
+    }
+    try {
+      const res = await apiRequest('/auth/delete-account', {
+        method: 'POST',
+        body: JSON.stringify({ confirmation: 'DELETE' })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data?.success) throw new Error(data?.error || t('js.deleteFail'));
+      signOut();
+      showHint(document.getElementById('acctMsgEmail'), t('js.deleteOk'), 'ok');
+    } catch (err) {
+      showAccountHint(err.message || t('js.deleteFail'), 'error');
+    }
+  }
+
+  async function requestOtp(){
+    const emailInput = document.getElementById('acctEmail');
+    const btn = document.getElementById('btnRequestOtp');
+    const hint = document.getElementById('acctMsgEmail');
+    const email = emailInput.value.trim();
+
+    if (!email || !email.includes('@')) {
+      showHint(hint, t('js.emailInvalid'), 'error');
+      emailInput.classList.remove('input-error');
+      void emailInput.offsetWidth; // restart animation if triggered twice in a row
+      emailInput.classList.add('input-error');
+      emailInput.focus();
+      return;
+    }
+
+    btn.disabled = true;
+    const originalLabel = btn.textContent;
+    btn.textContent = t('js.sending');
+    showHint(hint, '');
+
+    try {
+      const res = await apiRequest('/auth/request-otp', {
+        method: 'POST',
+        body: JSON.stringify({ email })
+      });
+      const contentType = res.headers.get('content-type') || '';
+      if (!contentType.includes('application/json')) {
+        throw new Error(t('js.unexpected'));
+      }
+      const data = await res.json();
+      if (!res.ok || !data?.success || !data?.otpId) {
+        throw new Error(data?.error || t('js.sendFail'));
+      }
+
+      localStorage.setItem(OTP_STORAGE_KEY, data.otpId);
+      localStorage.setItem(EMAIL_STORAGE_KEY, email);
+      document.getElementById('acctEmailEcho').textContent = email;
+      document.getElementById('stageEmail').style.display = 'none';
+      document.getElementById('stageCode').style.display = 'block';
+      document.getElementById('acctCode').focus();
+      showHint(document.getElementById('acctMsgCode'), t('js.codeSent'), 'ok');
+    } catch (err) {
+      showHint(hint, err.message || t('js.wrong'), 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = originalLabel;
+    }
+  }
+
+  async function verifyOtp(){
+    const codeInput = document.getElementById('acctCode');
+    const btn = document.getElementById('btnVerifyOtp');
+    const hint = document.getElementById('acctMsgCode');
+    const code = codeInput.value.replace(/\s+/g, '').trim();
+    const email = document.getElementById('acctEmail').value.trim();
+    const otpId = localStorage.getItem(OTP_STORAGE_KEY);
+
+    if (!code) {
+      showHint(hint, t('js.enterCode'), 'error');
+      codeInput.classList.remove('input-error');
+      void codeInput.offsetWidth;
+      codeInput.classList.add('input-error');
+      codeInput.focus();
+      return;
+    }
+    if (!otpId) {
+      showHint(hint, t('js.sessionExpired'), 'error');
+      return;
+    }
+
+    btn.disabled = true;
+    const originalLabel = btn.textContent;
+    btn.textContent = t('js.verifying');
+
+    try {
+      const res = await apiRequest('/auth/verify-otp', {
+        method: 'POST',
+        body: JSON.stringify({ otpId, code })
+      });
+      const contentType = res.headers.get('content-type') || '';
+      if (!contentType.includes('application/json')) {
+        throw new Error(t('js.unexpected'));
+      }
+      const data = await res.json();
+      if (!res.ok || !data?.success || !data?.token) {
+        throw new Error(data?.error || t('js.invalidCode'));
+      }
+
+      localStorage.setItem(TOKEN_STORAGE_KEY, data.token);
+      localStorage.removeItem(OTP_STORAGE_KEY);
+      renderAuthState(data.record || { email });
+    } catch (err) {
+      showHint(hint, err.message || t('js.wrong'), 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = originalLabel;
+    }
+  }
+
+  function signOut(){
+    localStorage.removeItem(TOKEN_STORAGE_KEY);
+    localStorage.removeItem(OTP_STORAGE_KEY);
+    localStorage.removeItem(EMAIL_STORAGE_KEY);
+    document.getElementById('acctEmail').value = '';
+    document.getElementById('acctCode').value = '';
+    renderAuthState();
+  }
+
+  document.getElementById('acctEmail').addEventListener('input', function(){ this.classList.remove('input-error'); });
+  document.getElementById('acctCode').addEventListener('input', function(){ this.classList.remove('input-error'); });
+
+  const savedEmail = localStorage.getItem(EMAIL_STORAGE_KEY);
+  if (savedEmail) document.getElementById('acctEmail').value = savedEmail;
+  if (localStorage.getItem(OTP_STORAGE_KEY) && savedEmail) {
+    document.getElementById('acctEmailEcho').textContent = savedEmail;
+    document.getElementById('stageEmail').style.display = 'none';
+    document.getElementById('stageCode').style.display = 'block';
+  }
+  loadAccountFromToken();
+</script>
+
+</body>
+</html>
