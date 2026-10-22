@@ -1,0 +1,10 @@
+{
+  "name": "byphil-site",
+  "private": true,
+  "type": "module",
+  "description": "Static byphil.eu site: one template, one JSON file per language, built to plain HTML.",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "node scripts/build.mjs --check"
+  }
+}
