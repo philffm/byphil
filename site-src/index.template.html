@@ -639,7 +639,99 @@
   #account .acct-input:focus{border-color:#D6266E; outline:2px solid #2DD4EE;}
   .tier .unit, .price-monthly small, .price-yearly small{margin-left:.35em;}
 
-</style>
+
+  /* ── Account v2: 4-digit code + paper-ticket panel ───────────────── */
+  #account .account-box{max-width:520px; padding:32px;}
+  .otp{position:relative; display:flex; gap:12px; margin:4px 0 16px;}
+  .otp-cell{
+    flex:1 1 0; max-width:68px; height:84px; display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-display); font-weight:700; font-size:44px; color:#15161B;
+    background:#F6F5F1; border:1.5px solid rgba(21,22,27,0.3); border-radius:12px; position:relative;
+    transition:box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  }
+  .otp-cell.is-filled{border-color:#15161B;}
+  .otp-cell.is-active{border-color:#15161B; background:rgba(45,212,238,0.18); box-shadow:0 0 0 3px #2DD4EE;}
+  .otp-cell.is-active:not(.is-filled)::after{content:""; width:2px; height:38px; background:#15161B; animation:otp-caret 1s steps(1) infinite;}
+  @keyframes otp-caret{50%{opacity:0;}}
+  .otp-input{position:absolute; inset:0; width:100%; height:100%; opacity:0; font-size:16px; border:0; background:transparent; cursor:text; caret-color:transparent;}
+  .otp.input-error{animation:shake 0.4s ease;}
+  .otp.input-error .otp-cell{border-color:#DC2626;}
+  .otp-submit{width:100%; margin-top:2px;}
+  .otp-note{font-size:13px; color:#5A5B63; margin:6px 0 0;}
+  .otp-links{display:flex; gap:18px; flex-wrap:wrap;}
+  @media (prefers-reduced-motion: reduce){ .otp.input-error, .otp-cell.is-active::after{animation:none;} }
+  .acct-signed-in{display:flex; align-items:center; gap:14px; flex-wrap:nowrap; justify-content:flex-start;}
+  .acct-who{flex:1; min-width:0;}
+  .acct-avatar{flex:none; width:52px; height:52px; border-radius:50%; background:#FF4FA3; border:1.5px solid #15161B; color:#15161B; display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-weight:700; font-size:24px;}
+  .acct-kicker{font-family:var(--font-mono); font-size:10.5px; letter-spacing:0.14em; text-transform:uppercase; color:#5A5B63; display:block;}
+  .acct-email{font-family:var(--font-body); font-weight:600; font-size:17px; overflow-wrap:anywhere;}
+  #account .acct-signed-in .btn-secondary, #account .account-actions .btn-secondary{background:transparent; color:#15161B; border:1.5px solid #15161B; border-radius:999px;}
+  .acct-ticket{display:flex; margin:22px 0; background:#2DD4EE; color:#08101F; border:1.5px solid #15161B; border-radius:8px;}
+  .acct-ticket .acct-kicker{color:#08101F;}
+  .acct-ticket strong{display:block; font-family:var(--font-display); font-weight:700;}
+  .acct-ticket-main{flex:1; padding:20px;}
+  .acct-ticket-main strong{font-size:32px; letter-spacing:-0.03em; margin-top:6px; text-transform:capitalize;}
+  .acct-ticket-side{display:flex; flex-direction:column; gap:14px; padding:20px 22px; border-left:2px dashed rgba(21,22,27,0.35);}
+  .acct-ticket-side strong{font-size:20px; margin-top:2px;}
+  .acct-apps ul{list-style:none; margin:8px 0 0; padding:0;}
+  .acct-apps li{display:flex; justify-content:space-between; align-items:center; gap:12px; padding:14px 0; border-bottom:1px solid rgba(21,22,27,0.15); font-family:var(--font-display); font-weight:500; font-size:18px;}
+  .acct-chip{font-family:var(--font-mono); font-size:10.5px; letter-spacing:0.06em; padding:4px 10px; border-radius:999px; background:#2DD4EE; border:1px solid #15161B;}
+  .acct-empty{font-size:14px; color:#5A5B63; margin:10px 0 0;}
+  #account .account-license{background:transparent; border:0; padding:0; margin:22px 0 14px;}
+  #account .account-license h3{font-family:var(--font-body); font-weight:600; font-size:14px; color:#15161B;}
+  #account .account-license p{color:#5A5B63;}
+  .account-actions{align-items:center;}
+  .acct-delete{margin-left:auto; background:none; border:0; padding:8px 2px; font:600 13px var(--font-body); color:#C0231E; text-decoration:underline; text-underline-offset:3px; cursor:pointer;}
+  @media (max-width: 460px){
+    .otp{gap:8px;} .otp-cell{height:72px; font-size:38px;}
+    .acct-ticket{flex-direction:column;} .acct-ticket-side{border-left:0; border-top:2px dashed rgba(21,22,27,0.35); flex-direction:row; gap:26px;}
+    .acct-signed-in{flex-wrap:wrap;}
+  }
+  
+  /* ── Header: floating paper pill ─────────────────────────────────── */
+  header.mast{
+    position:sticky; top:12px; z-index:50; margin-top:12px; padding:0 var(--gutter);
+    background:none; border:0; backdrop-filter:none; -webkit-backdrop-filter:none; pointer-events:none;
+  }
+  .mast-inner{
+    pointer-events:auto; max-width:960px; height:60px; padding:0 8px 0 24px; gap:18px;
+    background:#fff; color:#15161B; border:1.5px solid #15161B; border-radius:999px; box-shadow:4px 4px 0 #15161B;
+  }
+  :root:not([data-theme="light"]) .mast-inner{box-shadow:4px 4px 0 #2DD4EE;}
+  .wordmark{font-size:25px; color:#15161B;}
+  .wordmark .dot{color:#FF4FA3;}
+  .mast-right{gap:12px;}
+  nav.links{gap:2px;}
+  nav.links a{position:relative; display:inline-flex; align-items:center; height:36px; padding:0 14px; color:#15161B;}
+  nav.links a:hover{color:#15161B; background:rgba(45,212,238,0.22); border-radius:999px;}
+  nav.links a[aria-current="location"]{font-weight:600;}
+  nav.links a[aria-current="location"]::after{content:""; position:absolute; left:14px; right:14px; bottom:5px; height:5px; border-radius:3px; background:#2DD4EE; z-index:-1;}
+  .lang{gap:2px; padding:3px; border:1px solid rgba(21,22,27,0.3); border-radius:999px; color:#15161B;}
+  .lang > span{display:none;}
+  .lang a{display:flex; align-items:center; height:26px; padding:0 10px; border:0; border-radius:999px; color:#15161B; letter-spacing:0.06em;}
+  .lang a:hover{color:#15161B; background:rgba(45,212,238,0.22);}
+  .lang a[aria-current="true"]{background:#15161B; color:#F6F5F1;}
+  header.mast .theme-toggle{width:36px; height:36px; color:#15161B; border:1px solid rgba(21,22,27,0.3); background:none;}
+  header.mast .theme-toggle:hover{background:rgba(45,212,238,0.22);}
+  .btn-pill{background:#15161B; color:#F6F5F1; min-height:44px;}
+  .nav-toggle{color:#15161B; border:1px solid rgba(21,22,27,0.3); background:#F6F5F1; width:42px; height:42px;}
+  .mobile-menu{
+    left:var(--gutter); right:var(--gutter); top:calc(100% + 10px); pointer-events:auto;
+    background:#fff; color:#15161B; border:1.5px solid #15161B; border-radius:24px; box-shadow:4px 4px 0 #15161B;
+  }
+  :root:not([data-theme="light"]) .mobile-menu{box-shadow:4px 4px 0 #2DD4EE;}
+  .mobile-menu-inner{padding:10px 10px 16px;}
+  .mobile-menu-inner > a, .mobile-menu-inner .theme-toggle-mobile{
+    display:flex; align-items:center; justify-content:space-between; min-height:48px; padding:0 16px; border:0; border-radius:14px;
+    font-family:var(--font-display); font-weight:500; font-size:20px; color:#15161B; background:none;
+  }
+  .mobile-menu-inner > a:hover, .mobile-menu-inner > a:active{background:rgba(45,212,238,0.22);}
+  .mobile-lang{padding:12px 16px; border:0; font-size:16px; gap:10px;}
+  .mobile-lang a{padding:6px 14px; border-radius:999px; color:#15161B; border:1px solid rgba(21,22,27,0.3);}
+  .mobile-lang a[aria-current="true"]{background:#15161B; color:#F6F5F1; text-decoration:none;}
+  .mobile-menu-inner a.mobile-cta{background:#FF4FA3; color:#15161B; margin:10px 6px 0; min-height:50px; justify-content:center;}
+  @media (max-width: 820px){ .mast-inner{height:56px; padding:0 7px 0 20px;} header.mast{top:8px; margin-top:8px;} }
+  </style>
 </head>
 <body>
 
@@ -648,7 +740,6 @@
 <header class="mast">
   <div class="mast-inner">
     <a href="{{href:self}}" class="wordmark" aria-label="byphil">byphil<span class="dot">.</span></a>
-    <span class="mast-meta">{{t:mast.meta}}</span>
     <div class="mast-right">
       <nav class="links" aria-label="{{a:nav.label}}">
         <a href="#tools">{{t:nav.tools}}</a>
@@ -820,27 +911,42 @@
         <!-- Stage 2: code -->
         <div class="account-stage" id="stageCode" style="display:none;">
           <label for="acctCode" class="acct-label">{{t:account.codeSentTo}} <span id="acctEmailEcho"></span></label>
-          <form class="acct-row" onsubmit="handleVerifyOtp(event)" novalidate>
-            <input type="text" id="acctCode" class="acct-input mono" placeholder="000000" maxlength="6" inputmode="numeric" autocomplete="one-time-code" required>
-            <button type="submit" class="btn-primary" id="btnVerifyOtp">{{t:account.verify}}</button>
+          <form onsubmit="handleVerifyOtp(event)" novalidate>
+            <div class="otp" id="otp" role="group">
+              <span class="otp-cell" aria-hidden="true"></span><span class="otp-cell" aria-hidden="true"></span><span class="otp-cell" aria-hidden="true"></span><span class="otp-cell" aria-hidden="true"></span>
+              <input type="text" id="acctCode" class="otp-input" maxlength="4" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" aria-label="{{a:account.codeAria}}" required>
+            </div>
+            <button type="submit" class="btn-primary otp-submit" id="btnVerifyOtp">{{t:account.verify}}</button>
           </form>
           <p class="acct-hint" id="acctMsgCode" aria-live="polite"></p>
+          <p class="otp-note">{{t:account.autoVerify}}</p>
+          <div class="otp-links">
+            <button type="button" class="acct-link-btn" onclick="resendCode()">{{t:account.resend}}</button>
           <button type="button" class="acct-link-btn" onclick="resetToEmailStage()">{{t:account.differentEmail}}</button>
+          </div>
         </div>
 
         <!-- Stage 3: signed in -->
         <div class="account-stage" id="stageIn" style="display:none;">
           <div class="acct-signed-in">
-            <div>
-              <div class="acct-label" style="margin-bottom:4px;">{{t:account.signedInAs}}</div>
+            <span class="acct-avatar" id="acctAvatar" aria-hidden="true">?</span>
+            <div class="acct-who">
+              <div class="acct-kicker">{{t:account.signedInAs}}</div>
               <div class="acct-email" id="acctSignedEmail">—</div>
             </div>
             <button type="button" class="btn-secondary" onclick="signOut()">{{t:account.signOut}}</button>
           </div>
-          <div class="account-overview" aria-label="{{a:account.overview}}">
-            <div class="account-stat"><span>{{t:account.membership}}</span><strong id="accountTier">Free</strong></div>
-            <div class="account-stat"><span>{{t:account.memberSince}}</span><strong id="accountCreated">—</strong></div>
-            <div class="account-stat"><span>{{t:account.appsWithData}}</span><strong id="accountAppsCount">0</strong></div>
+          <div class="acct-ticket" aria-label="{{a:account.overview}}">
+            <div class="acct-ticket-main"><span class="acct-kicker">{{t:account.membership}}</span><strong id="accountTier">Free</strong></div>
+            <div class="acct-ticket-side">
+              <div><span class="acct-kicker">{{t:account.memberSince}}</span><strong id="accountCreated">—</strong></div>
+              <div><span class="acct-kicker">{{t:account.appsWithData}}</span><strong id="accountAppsCount">0</strong></div>
+            </div>
+          </div>
+          <div class="acct-apps">
+            <div class="acct-kicker">{{t:account.yourApps}}</div>
+            <ul id="accountApps"></ul>
+            <p class="acct-empty" id="accountAppsEmpty">{{t:account.noApps}}</p>
           </div>
           <div class="account-license" id="licenseActions">
             <h3>{{t:account.linkTitle}}</h3>
@@ -854,7 +960,7 @@
           <div class="account-actions">
             <button type="button" class="btn-secondary" onclick="refreshAccount()">{{t:account.refresh}}</button>
             <button type="button" class="btn-secondary" onclick="downloadAccountData()">{{t:account.download}}</button>
-            <button type="button" class="btn-secondary btn-danger" onclick="deleteAccount()">{{t:account.delete}}</button>
+            <button type="button" class="acct-delete" onclick="deleteAccount()">{{t:account.delete}}</button>
           </div>
         </div>
       </div>
@@ -939,6 +1045,20 @@
     }
   })();
 
+  /* ── Active section marker in the pill nav ── */
+  (function(){
+    const links = Array.from(document.querySelectorAll('nav.links a[href^="#"]'));
+    const map = new Map(links.map(a => [a.getAttribute('href').slice(1), a]));
+    if (!('IntersectionObserver' in window)) return;
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        const a = map.get(e.target.id);
+        if (a) { if (e.isIntersecting) a.setAttribute('aria-current', 'location'); else a.removeAttribute('aria-current'); }
+      });
+    }, { rootMargin: '-35% 0px -55% 0px' });
+    map.forEach((a, id) => { const el = document.getElementById(id); if (el) io.observe(el); });
+  })();
+
   /* ── App index: the row under the pointer / focus takes the highlight ── */
   (function(){
     const rows = Array.from(document.querySelectorAll('.app-row:has(a[href])'));
@@ -971,12 +1091,12 @@
   function closeMobileMenu(){
     mobileMenu.hidden = true;
     navToggle.setAttribute('aria-expanded', 'false');
-    navToggle.setAttribute('aria-label', 'Open menu');
+    navToggle.setAttribute('aria-label', t('nav.menu'));
   }
   function openMobileMenu(){
     mobileMenu.hidden = false;
     navToggle.setAttribute('aria-expanded', 'true');
-    navToggle.setAttribute('aria-label', 'Close menu');
+    navToggle.setAttribute('aria-label', t('nav.menuClose'));
   }
   navToggle.addEventListener('click', () => {
     if (mobileMenu.hidden) openMobileMenu(); else closeMobileMenu();
@@ -1028,6 +1148,55 @@
     el.className = 'acct-hint' + (kind ? ' ' + kind : '');
   }
 
+  const APP_NAMES = { ai_summary_helper:'AI Summary Helper', petsetlife:'PetSetLife', matrix:'Matrix' };
+  function renderApps(keys){
+    const list = document.getElementById('accountApps');
+    list.textContent = '';
+    keys.forEach(k => {
+      const li = document.createElement('li');
+      const name = document.createElement('span');
+      name.textContent = APP_NAMES[k] || k.replace(/[_-]+/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+      const chip = document.createElement('span');
+      chip.className = 'acct-chip';
+      chip.textContent = t('js.appSynced');
+      li.append(name, chip);
+      list.appendChild(li);
+    });
+    document.getElementById('accountAppsEmpty').style.display = keys.length ? 'none' : 'block';
+  }
+
+  /* 4-digit code: one real input (paste, SMS autofill, a11y) drawn as four cells */
+  const otpInput = document.getElementById('acctCode');
+  const otpBox = document.getElementById('otp');
+  function renderOtp(){
+    const digits = otpInput.value;
+    const focused = document.activeElement === otpInput;
+    otpBox.querySelectorAll('.otp-cell').forEach((cell, i) => {
+      cell.textContent = digits[i] || '';
+      cell.classList.toggle('is-filled', !!digits[i]);
+      cell.classList.toggle('is-active', focused && i === Math.min(digits.length, 3));
+    });
+  }
+  otpInput.addEventListener('input', () => {
+    otpInput.value = otpInput.value.replace(/\D/g, '').slice(0, 4);
+    otpBox.classList.remove('input-error');
+    renderOtp();
+    if (otpInput.value.length === 4 && !document.getElementById('btnVerifyOtp').disabled) verifyOtp();
+  });
+  otpInput.addEventListener('focus', renderOtp);
+  otpInput.addEventListener('blur', renderOtp);
+
+  async function resendCode(){
+    const hint = document.getElementById('acctMsgCode');
+    otpInput.value = ''; renderOtp();
+    showHint(hint, '');
+    document.getElementById('acctMsgEmail').textContent = '';
+    await requestOtp();
+    const err = document.getElementById('acctMsgEmail');
+    if (err.classList.contains('error') && err.textContent) showHint(hint, err.textContent, 'error');
+    otpInput.focus();
+  }
+
   function renderAuthState(record){
     const navBtn = document.getElementById('navSignIn');
     document.getElementById('stageEmail').style.display = 'none';
@@ -1041,6 +1210,8 @@
       document.getElementById('accountCreated').textContent = formatDate(record.created);
       const appData = record.app_data && typeof record.app_data === 'object' ? record.app_data : {};
       document.getElementById('accountAppsCount').textContent = String(Object.keys(appData).length);
+      document.getElementById('acctAvatar').textContent = (record.email[0] || '?').toUpperCase();
+      renderApps(Object.keys(appData));
       document.getElementById('licenseActions').style.display = record.license_key ? 'none' : 'block';
       if (navBtn) navBtn.textContent = t('js.myAccount');
     } else {
@@ -1051,7 +1222,7 @@
 
   function resetToEmailStage(){
     localStorage.removeItem(OTP_STORAGE_KEY);
-    document.getElementById('acctCode').value = '';
+    document.getElementById('acctCode').value = ''; renderOtp();
     showHint(document.getElementById('acctMsgCode'), '');
     document.getElementById('stageCode').style.display = 'none';
     document.getElementById('stageEmail').style.display = 'block';
@@ -1242,11 +1413,11 @@
     const email = document.getElementById('acctEmail').value.trim();
     const otpId = localStorage.getItem(OTP_STORAGE_KEY);
 
-    if (!code) {
+    if (code.length !== 4) {
       showHint(hint, t('js.enterCode'), 'error');
-      codeInput.classList.remove('input-error');
-      void codeInput.offsetWidth;
-      codeInput.classList.add('input-error');
+      otpBox.classList.remove('input-error');
+      void otpBox.offsetWidth;
+      otpBox.classList.add('input-error');
       codeInput.focus();
       return;
     }
@@ -1278,6 +1449,9 @@
       renderAuthState(data.record || { email });
     } catch (err) {
       showHint(hint, err.message || t('js.wrong'), 'error');
+      codeInput.value = ''; renderOtp();
+      otpBox.classList.remove('input-error'); void otpBox.offsetWidth; otpBox.classList.add('input-error');
+      codeInput.focus();
     } finally {
       btn.disabled = false;
       btn.textContent = originalLabel;
@@ -1289,12 +1463,11 @@
     localStorage.removeItem(OTP_STORAGE_KEY);
     localStorage.removeItem(EMAIL_STORAGE_KEY);
     document.getElementById('acctEmail').value = '';
-    document.getElementById('acctCode').value = '';
+    document.getElementById('acctCode').value = ''; renderOtp();
     renderAuthState();
   }
 
   document.getElementById('acctEmail').addEventListener('input', function(){ this.classList.remove('input-error'); });
-  document.getElementById('acctCode').addEventListener('input', function(){ this.classList.remove('input-error'); });
 
   const savedEmail = localStorage.getItem(EMAIL_STORAGE_KEY);
   if (savedEmail) document.getElementById('acctEmail').value = savedEmail;
