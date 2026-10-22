@@ -21,7 +21,7 @@ const LOCALES = [
   { code: 'de', dir: 'de/', lang: 'de', og: 'de_DE' },
 ];
 // Keys with these prefixes are also shipped to the browser as window.I18N (used by inline JS).
-const JS_PREFIXES = ['js.', 'nav.theme'];
+const JS_PREFIXES = ['js.', 'nav.theme', 'nav.menu'];
 const CHECK = process.argv.includes('--check');
 
 const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8');
