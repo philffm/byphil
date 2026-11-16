@@ -308,6 +308,12 @@
   .acct-input:focus{border-color:var(--signal-light);}
   .acct-input::placeholder{color:var(--steel-400);}
   .acct-row .btn-primary{white-space:nowrap;}
+  .pass-claim{border:1px solid var(--line, rgba(127,127,127,0.3)); border-radius:14px; padding:16px 18px; margin:0 0 22px;}
+  .pass-claim.ok{border-color:rgba(74,222,128,0.55);}
+  .pass-claim.error{border-color:rgba(248,113,113,0.55);}
+  .pass-claim-msg{margin:0; line-height:1.5;}
+  .pass-claim-actions{display:flex; flex-wrap:wrap; gap:10px; margin-top:12px;}
+  .pass-claim-actions:empty{display:none;}
   .acct-hint{font-size:14px; color:var(--paper-dim); min-height:18px; margin:14px 0 0; line-height:1.5;}
   .acct-hint.error{color:#F87171;}
   .acct-hint.ok{color:#4ADE80;}
@@ -855,7 +861,7 @@
           <div class="tier-note"><span class="price-monthly">{{t:tier.pass.billedMonthly}}</span><span class="price-yearly">{{t:tier.pass.billedYearly}}</span></div>
           <hr>
           <ul><li>{{t:tier.pass.li1}}</li><li>{{t:tier.pass.li2}}</li><li>{{t:tier.pass.li3}}</li></ul>
-          <a href="https://buy.stripe.com/8x24gy3Lj9RkeAl9T5bEA02" class="tier-cta" id="ctaSupportPass" target="_blank" rel="noopener">{{t:tier.pass.cta}}</a>
+          <a href="https://api.byphil.eu/v1/billing/checkout?plan=monthly" class="tier-cta" id="ctaSupportPass" target="_blank" rel="noopener">{{t:tier.pass.cta}}</a>
         </div>
 
         <div class="tier">
@@ -864,7 +870,7 @@
           <div class="tier-note">{{t:tier.donor.note}}</div>
           <hr>
           <ul><li>{{t:tier.donor.li1}}</li><li>{{t:tier.donor.li2}}</li></ul>
-          <a href="https://buy.stripe.com/dRmbJ0bdLfbEbo95CPbEA04" class="tier-cta" target="_blank" rel="noopener">{{t:tier.donor.cta}}</a>
+          <a href="https://api.byphil.eu/v1/billing/checkout?plan=donor" class="tier-cta" id="ctaDonor" target="_blank" rel="noopener">{{t:tier.donor.cta}}</a>
         </div>
       </div>
       <p class="fair-use">{{t:pass.fairuse}}</p>
@@ -880,6 +886,11 @@
       </div>
 
       <div class="account-box reveal">
+        <!-- After a Support Pass purchase: Stripe returns here with ?session_id=… (claimCheckout below) -->
+        <div class="pass-claim" id="passClaim" hidden>
+          <p class="pass-claim-msg" id="passClaimMsg" aria-live="polite"></p>
+          <div class="pass-claim-actions" id="passClaimActions"></div>
+        </div>
         <!-- Stage 1: email -->
         <div class="account-stage" id="stageEmail">
           <label for="acctEmail" class="acct-label">{{t:account.emailLabel}}</label>
@@ -1093,27 +1104,41 @@
     }
   });
 
-  const STRIPE_LINKS = {
-    monthly: 'https://buy.stripe.com/8x24gy3Lj9RkeAl9T5bEA02',
-    yearly: 'https://buy.stripe.com/7sY3cu4Pnd3wak5d5hbEA03'
-  };
+  // Buying goes through the API, which redirects to the current payment provider (byphilapi src/routes/billing.js),
+  // so a provider switch needs no change here. Signed in: the account and its email go along, so the payment lands on it.
+  const CHECKOUT_BASE = 'https://api.byphil.eu/v1/billing/checkout';
+  let billingPeriod = 'monthly';
+  let checkoutAccount = null;
+  function checkoutUrl(plan){
+    const u = new URL(CHECKOUT_BASE);
+    u.searchParams.set('plan', plan);
+    // Where Stripe sends the buyer back: this site, in this language (fixed per app on the server).
+    u.searchParams.set('app', document.documentElement.lang === 'de' ? 'byphil-de' : 'byphil');
+    if (checkoutAccount && /^[a-z0-9]{15}$/.test(String(checkoutAccount.id || ''))) u.searchParams.set('account', checkoutAccount.id);
+    if (checkoutAccount && checkoutAccount.email) u.searchParams.set('email', checkoutAccount.email);
+    return u.toString();
+  }
+  function updateCheckoutLinks(){
+    const sp = document.getElementById('ctaSupportPass'); if (sp) sp.href = checkoutUrl(billingPeriod);
+    const d = document.getElementById('ctaDonor'); if (d) d.href = checkoutUrl('donor');
+  }
 
   function setBilling(period){
     const grid = document.getElementById('tiersGrid');
     const bm = document.getElementById('btnMonthly');
     const by = document.getElementById('btnYearly');
-    const supportPassCta = document.getElementById('ctaSupportPass');
     if (period === 'yearly') {
       grid.classList.add('yearly');
       by.classList.add('active');
       bm.classList.remove('active');
-      if (supportPassCta) supportPassCta.href = STRIPE_LINKS.yearly;
+      billingPeriod = 'yearly';
     } else {
       grid.classList.remove('yearly');
       bm.classList.add('active');
       by.classList.remove('active');
-      if (supportPassCta) supportPassCta.href = STRIPE_LINKS.monthly;
+      billingPeriod = 'monthly';
     }
+    updateCheckoutLinks();
   }
 
     /* ── Auth: uses the same API contract as the previous page and the
@@ -1180,6 +1205,8 @@
   }
 
   function renderAuthState(record){
+    checkoutAccount = record && record.email ? record : null;
+    updateCheckoutLinks();
     const navBtn = document.getElementById('navSignIn');
     document.getElementById('stageEmail').style.display = 'none';
     document.getElementById('stageCode').style.display = 'none';
@@ -1458,7 +1485,72 @@
     document.getElementById('stageEmail').style.display = 'none';
     document.getElementById('stageCode').style.display = 'block';
   }
-  loadAccountFromToken();
+  /* ── Support Pass: Stripe returns here with ?session_id=… (byphilapi APPS: byphil / byphil-de).
+     The API decides which account gets the pass (POST /v1/auth/claim-checkout); this only shows the outcome. ── */
+  const fill = (key, vars) => t(key).replace(/\{(\w+)\}/g, (_, k) => (vars && vars[k]) || '');
+  function showClaim(message, kind, actions){
+    const box = document.getElementById('passClaim');
+    box.hidden = false;
+    box.className = 'pass-claim' + (kind ? ' ' + kind : '');
+    document.getElementById('passClaimMsg').textContent = message;
+    const row = document.getElementById('passClaimActions');
+    row.textContent = '';
+    (actions || []).forEach(([label, onClick, primary]) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = primary ? 'btn-primary' : 'btn-secondary';
+      b.textContent = label;
+      b.addEventListener('click', onClick);
+      row.appendChild(b);
+    });
+    document.getElementById('account').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+  }
+
+  async function claimCheckout(sessionId, confirm, attempt = 0){
+    showClaim(t('js.passChecking'));
+    let res, data = {};
+    try {
+      res = await apiRequest('/auth/claim-checkout', { method: 'POST', body: JSON.stringify({ session_id: sessionId, ...(confirm ? { confirm } : {}) }) });
+      data = await res.json().catch(() => ({}));
+    } catch (e) { res = null; }
+
+    if (res && res.status === 402) {          // not paid yet: card payments settle in seconds, SEPA in days
+      if (attempt < 4) { setTimeout(() => claimCheckout(sessionId, confirm, attempt + 1), 3000); return; }
+      return showClaim(t('js.passPending'));
+    }
+    if (res && res.status === 409) { await loadAccountFromToken(); return showClaim(t('js.passClaimed'), 'ok'); }
+    if (!res || !res.ok || !data.success) return showClaim(t('js.passFail'), 'error');
+
+    if (data.state === 'signed_in' && data.token) {
+      localStorage.setItem(TOKEN_STORAGE_KEY, data.token);
+      localStorage.setItem(EMAIL_STORAGE_KEY, data.record?.email || '');
+    }
+    if (data.state === 'active' || data.state === 'signed_in') {
+      await loadAccountFromToken();
+      return showClaim(fill('js.passActive', { email: data.record?.email }), 'ok');
+    }
+    if (data.state === 'confirm') {
+      const vars = { paid: data.paid_email, account: data.account_email };
+      return showClaim(fill('js.passConfirm', vars), null, [
+        [fill('js.passUseSignedIn', vars), () => claimCheckout(sessionId, 'signed_in'), true],
+        [fill('js.passUsePaid', vars), () => claimCheckout(sessionId, 'switch')],
+      ]);
+    }
+    if (data.state === 'code_required') {    // the pass is on an existing account: sign in to it with a code
+      if (localStorage.getItem(TOKEN_STORAGE_KEY)) signOut();
+      document.getElementById('acctEmail').value = data.email || '';
+      return showClaim(fill('js.passSignIn', { email: data.email }), 'ok');
+    }
+    showClaim(t('js.passFail'), 'error');
+  }
+
+  const checkoutSession = new URLSearchParams(location.search).get('session_id');
+  if (checkoutSession && /^cs_(test|live)_[A-Za-z0-9]+$/.test(checkoutSession)) {
+    history.replaceState(null, '', location.pathname + location.hash);   // a reload or a shared link won't claim again
+    loadAccountFromToken().then(() => claimCheckout(checkoutSession));
+  } else {
+    loadAccountFromToken();
+  }
 </script>
 
 </body>

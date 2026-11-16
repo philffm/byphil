@@ -132,5 +132,14 @@
   "account.yourApps": "Your apps",
   "account.noApps": "No app data yet.",
   "js.appSynced": "Data synced",
-  "nav.menuClose": "Close menu"
+  "nav.menuClose": "Close menu",
+  "js.passChecking": "Activating your Support Pass…",
+  "js.passActive": "Thank you! Your Support Pass is active on {email}.",
+  "js.passPending": "Thanks! We're waiting for your bank to confirm the payment (SEPA can take a few days). Your pass turns on by itself once it's through.",
+  "js.passConfirm": "You paid as {paid}, but you're signed in as {account}. Which account should get the Support Pass?",
+  "js.passUseSignedIn": "Use {account}",
+  "js.passUsePaid": "Use {paid}",
+  "js.passSignIn": "Your Support Pass is active on {email}. Sign in with that address below to use it.",
+  "js.passClaimed": "This purchase is already activated.",
+  "js.passFail": "We couldn't confirm the purchase here. Your pass is on the email you paid with: sign in with it below."
 }
