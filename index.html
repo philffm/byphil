@@ -869,7 +869,7 @@
           <div class="tier-note"><span class="price-monthly">Billed monthly</span><span class="price-yearly">Billed yearly</span></div>
           <hr>
           <ul><li>Web summaries with fair-use limits</li><li>Unlimited pet passes</li><li>Kindle delivery included</li></ul>
-          <a href="https://buy.stripe.com/8x24gy3Lj9RkeAl9T5bEA02" class="tier-cta" id="ctaSupportPass" target="_blank" rel="noopener">Join</a>
+          <a href="https://api.byphil.eu/v1/billing/checkout?plan=monthly" class="tier-cta" id="ctaSupportPass" target="_blank" rel="noopener">Join</a>
         </div>
 
         <div class="tier">
@@ -878,7 +878,7 @@
           <div class="tier-note">12 months full access</div>
           <hr>
           <ul><li>Everything in Support Pass</li><li>Direct support for future tools</li></ul>
-          <a href="https://buy.stripe.com/dRmbJ0bdLfbEbo95CPbEA04" class="tier-cta" target="_blank" rel="noopener">Donate & unlock</a>
+          <a href="https://api.byphil.eu/v1/billing/checkout?plan=donor" class="tier-cta" id="ctaDonor" target="_blank" rel="noopener">Donate & unlock</a>
         </div>
       </div>
       <p class="fair-use">Fair-use limits apply to prevent abuse and keep costs sustainable.</p>
@@ -1107,27 +1107,39 @@
     }
   });
 
-  const STRIPE_LINKS = {
-    monthly: 'https://buy.stripe.com/8x24gy3Lj9RkeAl9T5bEA02',
-    yearly: 'https://buy.stripe.com/7sY3cu4Pnd3wak5d5hbEA03'
-  };
+  // Buying goes through the API, which redirects to the current payment provider (byphilapi src/routes/billing.js),
+  // so a provider switch needs no change here. Signed in: the account and its email go along, so the payment lands on it.
+  const CHECKOUT_BASE = 'https://api.byphil.eu/v1/billing/checkout';
+  let billingPeriod = 'monthly';
+  let checkoutAccount = null;
+  function checkoutUrl(plan){
+    const u = new URL(CHECKOUT_BASE);
+    u.searchParams.set('plan', plan);
+    if (checkoutAccount && /^[a-z0-9]{15}$/.test(String(checkoutAccount.id || ''))) u.searchParams.set('account', checkoutAccount.id);
+    if (checkoutAccount && checkoutAccount.email) u.searchParams.set('email', checkoutAccount.email);
+    return u.toString();
+  }
+  function updateCheckoutLinks(){
+    const sp = document.getElementById('ctaSupportPass'); if (sp) sp.href = checkoutUrl(billingPeriod);
+    const d = document.getElementById('ctaDonor'); if (d) d.href = checkoutUrl('donor');
+  }
 
   function setBilling(period){
     const grid = document.getElementById('tiersGrid');
     const bm = document.getElementById('btnMonthly');
     const by = document.getElementById('btnYearly');
-    const supportPassCta = document.getElementById('ctaSupportPass');
     if (period === 'yearly') {
       grid.classList.add('yearly');
       by.classList.add('active');
       bm.classList.remove('active');
-      if (supportPassCta) supportPassCta.href = STRIPE_LINKS.yearly;
+      billingPeriod = 'yearly';
     } else {
       grid.classList.remove('yearly');
       bm.classList.add('active');
       by.classList.remove('active');
-      if (supportPassCta) supportPassCta.href = STRIPE_LINKS.monthly;
+      billingPeriod = 'monthly';
     }
+    updateCheckoutLinks();
   }
 
     /* ── Auth: uses the same API contract as the previous page and the
@@ -1194,6 +1206,8 @@
   }
 
   function renderAuthState(record){
+    checkoutAccount = record && record.email ? record : null;
+    updateCheckoutLinks();
     const navBtn = document.getElementById('navSignIn');
     document.getElementById('stageEmail').style.display = 'none';
     document.getElementById('stageCode').style.display = 'none';
