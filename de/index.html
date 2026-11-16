@@ -322,6 +322,12 @@
   .acct-input:focus{border-color:var(--signal-light);}
   .acct-input::placeholder{color:var(--steel-400);}
   .acct-row .btn-primary{white-space:nowrap;}
+  .pass-claim{border:1px solid var(--line, rgba(127,127,127,0.3)); border-radius:14px; padding:16px 18px; margin:0 0 22px;}
+  .pass-claim.ok{border-color:rgba(74,222,128,0.55);}
+  .pass-claim.error{border-color:rgba(248,113,113,0.55);}
+  .pass-claim-msg{margin:0; line-height:1.5;}
+  .pass-claim-actions{display:flex; flex-wrap:wrap; gap:10px; margin-top:12px;}
+  .pass-claim-actions:empty{display:none;}
   .acct-hint{font-size:14px; color:var(--paper-dim); min-height:18px; margin:14px 0 0; line-height:1.5;}
   .acct-hint.error{color:#F87171;}
   .acct-hint.ok{color:#4ADE80;}
@@ -894,6 +900,11 @@
       </div>
 
       <div class="account-box reveal">
+        <!-- After a Support Pass purchase: Stripe returns here with ?session_id=… (claimCheckout below) -->
+        <div class="pass-claim" id="passClaim" hidden>
+          <p class="pass-claim-msg" id="passClaimMsg" aria-live="polite"></p>
+          <div class="pass-claim-actions" id="passClaimActions"></div>
+        </div>
         <!-- Stage 1: email -->
         <div class="account-stage" id="stageEmail">
           <label for="acctEmail" class="acct-label">E-Mail-Adresse</label>
@@ -996,7 +1007,7 @@
   </div>
 </footer>
 
-<script>window.I18N = {"nav.menu":"Menü öffnen","nav.themeToLight":"Zum hellen Modus wechseln","nav.themeToDark":"Zum dunklen Modus wechseln","js.myAccount":"Mein Konto","js.signIn":"Anmelden","js.acctUpdated":"Kontodaten aktualisiert.","js.enterLicense":"Geben Sie einen Lizenzschlüssel oder eine Abo-ID ein.","js.licenseFail":"Lizenz konnte nicht verknüpft werden.","js.licenseOk":"Lizenz erfolgreich verknüpft.","js.exportFail":"Kontodaten konnten nicht exportiert werden.","js.exportOk":"Kontoexport heruntergeladen.","js.downloadFail":"Kontodaten konnten nicht heruntergeladen werden.","js.deleteConfirm":"Konto und zugehörige Daten endgültig löschen? Das kann nicht rückgängig gemacht werden.","js.deletePrompt":"Geben Sie DELETE ein, um die Kontolöschung zu bestätigen.","js.deleteCancelled":"Kontolöschung abgebrochen.","js.deleteFail":"Konto konnte nicht gelöscht werden.","js.deleteOk":"Konto erfolgreich gelöscht.","js.emailInvalid":"Bitte geben Sie eine gültige E-Mail-Adresse ein.","js.sending":"Wird gesendet …","js.unexpected":"Unerwartete Serverantwort. Bitte versuchen Sie es erneut.","js.sendFail":"Code konnte nicht gesendet werden.","js.codeSent":"Code gesendet – bitte Posteingang prüfen.","js.wrong":"Etwas ist schiefgelaufen.","js.enterCode":"Geben Sie den 4-stelligen Code ein.","js.sessionExpired":"Sitzung abgelaufen – bitte neuen Code anfordern.","js.verifying":"Wird geprüft …","js.invalidCode":"Ungültiger Code.","js.appSynced":"Daten synchronisiert","nav.menuClose":"Menü schließen"};</script>
+<script>window.I18N = {"nav.menu":"Menü öffnen","nav.themeToLight":"Zum hellen Modus wechseln","nav.themeToDark":"Zum dunklen Modus wechseln","js.myAccount":"Mein Konto","js.signIn":"Anmelden","js.acctUpdated":"Kontodaten aktualisiert.","js.enterLicense":"Geben Sie einen Lizenzschlüssel oder eine Abo-ID ein.","js.licenseFail":"Lizenz konnte nicht verknüpft werden.","js.licenseOk":"Lizenz erfolgreich verknüpft.","js.exportFail":"Kontodaten konnten nicht exportiert werden.","js.exportOk":"Kontoexport heruntergeladen.","js.downloadFail":"Kontodaten konnten nicht heruntergeladen werden.","js.deleteConfirm":"Konto und zugehörige Daten endgültig löschen? Das kann nicht rückgängig gemacht werden.","js.deletePrompt":"Geben Sie DELETE ein, um die Kontolöschung zu bestätigen.","js.deleteCancelled":"Kontolöschung abgebrochen.","js.deleteFail":"Konto konnte nicht gelöscht werden.","js.deleteOk":"Konto erfolgreich gelöscht.","js.emailInvalid":"Bitte geben Sie eine gültige E-Mail-Adresse ein.","js.sending":"Wird gesendet …","js.unexpected":"Unerwartete Serverantwort. Bitte versuchen Sie es erneut.","js.sendFail":"Code konnte nicht gesendet werden.","js.codeSent":"Code gesendet – bitte Posteingang prüfen.","js.wrong":"Etwas ist schiefgelaufen.","js.enterCode":"Geben Sie den 4-stelligen Code ein.","js.sessionExpired":"Sitzung abgelaufen – bitte neuen Code anfordern.","js.verifying":"Wird geprüft …","js.invalidCode":"Ungültiger Code.","js.appSynced":"Daten synchronisiert","nav.menuClose":"Menü schließen","js.passChecking":"Dein Support Pass wird aktiviert…","js.passActive":"Danke! Dein Support Pass ist auf {email} aktiv.","js.passPending":"Danke! Wir warten noch auf die Bestätigung deiner Bank (bei SEPA bis zu ein paar Tage). Danach wird dein Pass von selbst aktiv.","js.passConfirm":"Du hast als {paid} bezahlt, bist aber als {account} angemeldet. Welches Konto soll den Support Pass bekommen?","js.passUseSignedIn":"{account} verwenden","js.passUsePaid":"{paid} verwenden","js.passSignIn":"Dein Support Pass ist auf {email} aktiv. Melde dich unten mit dieser Adresse an, um ihn zu nutzen.","js.passClaimed":"Dieser Kauf ist bereits aktiviert.","js.passFail":"Wir konnten den Kauf hier nicht bestätigen. Dein Pass liegt auf der E-Mail, mit der du bezahlt hast: Melde dich unten damit an."};</script>
 <script>
   const t = (key) => (window.I18N && window.I18N[key]) || key;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1115,6 +1126,8 @@
   function checkoutUrl(plan){
     const u = new URL(CHECKOUT_BASE);
     u.searchParams.set('plan', plan);
+    // Where Stripe sends the buyer back: this site, in this language (fixed per app on the server).
+    u.searchParams.set('app', document.documentElement.lang === 'de' ? 'byphil-de' : 'byphil');
     if (checkoutAccount && /^[a-z0-9]{15}$/.test(String(checkoutAccount.id || ''))) u.searchParams.set('account', checkoutAccount.id);
     if (checkoutAccount && checkoutAccount.email) u.searchParams.set('email', checkoutAccount.email);
     return u.toString();
@@ -1486,7 +1499,72 @@
     document.getElementById('stageEmail').style.display = 'none';
     document.getElementById('stageCode').style.display = 'block';
   }
-  loadAccountFromToken();
+  /* ── Support Pass: Stripe returns here with ?session_id=… (byphilapi APPS: byphil / byphil-de).
+     The API decides which account gets the pass (POST /v1/auth/claim-checkout); this only shows the outcome. ── */
+  const fill = (key, vars) => t(key).replace(/\{(\w+)\}/g, (_, k) => (vars && vars[k]) || '');
+  function showClaim(message, kind, actions){
+    const box = document.getElementById('passClaim');
+    box.hidden = false;
+    box.className = 'pass-claim' + (kind ? ' ' + kind : '');
+    document.getElementById('passClaimMsg').textContent = message;
+    const row = document.getElementById('passClaimActions');
+    row.textContent = '';
+    (actions || []).forEach(([label, onClick, primary]) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = primary ? 'btn-primary' : 'btn-secondary';
+      b.textContent = label;
+      b.addEventListener('click', onClick);
+      row.appendChild(b);
+    });
+    document.getElementById('account').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+  }
+
+  async function claimCheckout(sessionId, confirm, attempt = 0){
+    showClaim(t('js.passChecking'));
+    let res, data = {};
+    try {
+      res = await apiRequest('/auth/claim-checkout', { method: 'POST', body: JSON.stringify({ session_id: sessionId, ...(confirm ? { confirm } : {}) }) });
+      data = await res.json().catch(() => ({}));
+    } catch (e) { res = null; }
+
+    if (res && res.status === 402) {          // not paid yet: card payments settle in seconds, SEPA in days
+      if (attempt < 4) { setTimeout(() => claimCheckout(sessionId, confirm, attempt + 1), 3000); return; }
+      return showClaim(t('js.passPending'));
+    }
+    if (res && res.status === 409) { await loadAccountFromToken(); return showClaim(t('js.passClaimed'), 'ok'); }
+    if (!res || !res.ok || !data.success) return showClaim(t('js.passFail'), 'error');
+
+    if (data.state === 'signed_in' && data.token) {
+      localStorage.setItem(TOKEN_STORAGE_KEY, data.token);
+      localStorage.setItem(EMAIL_STORAGE_KEY, data.record?.email || '');
+    }
+    if (data.state === 'active' || data.state === 'signed_in') {
+      await loadAccountFromToken();
+      return showClaim(fill('js.passActive', { email: data.record?.email }), 'ok');
+    }
+    if (data.state === 'confirm') {
+      const vars = { paid: data.paid_email, account: data.account_email };
+      return showClaim(fill('js.passConfirm', vars), null, [
+        [fill('js.passUseSignedIn', vars), () => claimCheckout(sessionId, 'signed_in'), true],
+        [fill('js.passUsePaid', vars), () => claimCheckout(sessionId, 'switch')],
+      ]);
+    }
+    if (data.state === 'code_required') {    // the pass is on an existing account: sign in to it with a code
+      if (localStorage.getItem(TOKEN_STORAGE_KEY)) signOut();
+      document.getElementById('acctEmail').value = data.email || '';
+      return showClaim(fill('js.passSignIn', { email: data.email }), 'ok');
+    }
+    showClaim(t('js.passFail'), 'error');
+  }
+
+  const checkoutSession = new URLSearchParams(location.search).get('session_id');
+  if (checkoutSession && /^cs_(test|live)_[A-Za-z0-9]+$/.test(checkoutSession)) {
+    history.replaceState(null, '', location.pathname + location.hash);   // a reload or a shared link won't claim again
+    loadAccountFromToken().then(() => claimCheckout(checkoutSession));
+  } else {
+    loadAccountFromToken();
+  }
 </script>
 
 </body>
